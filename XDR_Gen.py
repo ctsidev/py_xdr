@@ -23,22 +23,16 @@ class XDR_Gen:
         spool_script = 'set feedback off\nset termout off\nset markup csv on quote on\n\n'
         tables = json.load(open('tables.json'))
         sql_tables = []
+        enc_tables = []
         for table in tables:
             name = table['NAME']
             if name in sel_tables:
                 for sql_table in table['TABLES']:
-                    if sql_table not in sql_tables and sql_table in self.csn_tables:
+                    if sql_table not in sql_tables:
                         sql_tables.append(sql_table)
-                    f = open(os.path.join('table_scripts', 'base_tables', sql_table), 'r').read()
-                    f = f.replace('<<PROJECT_ID>>', self.project_id)
-                    if self.basis == 'Patient_Based':
-                        f = f.replace('<<LINK_TBL>>', 'pat')
-                        f = f.replace('<<LINK_COL>>', 'pat_id')
-                    elif self.basis == 'Encounter_Based':
-                        f = f.replace('<<LINK_TBL>>', 'enc')
-                        f = f.replace('<<LINK_COL>>', 'pat_enc_csn_id')
-                    
-                    base_script += f + '\n\n'
+
+                        if sql_table in self.csn_tables:
+                            enc_tables.append(sql_table)
 
                 elements = sel_tables[name]
                 cols = ''
@@ -49,11 +43,23 @@ class XDR_Gen:
                 f = f.replace('<<COLS>>', cols[:-1])
                 f = f.replace('<<PROJECT_ID>>', self.project_id)
                 spool_script += f
+
+        for sql_table in sql_tables:
+            f = open(os.path.join('table_scripts', 'base_tables', sql_table), 'r').read()
+            f = f.replace('<<PROJECT_ID>>', self.project_id)
+            if self.basis == 'Patient_Based':
+                f = f.replace('<<LINK_TBL>>', 'pat')
+                f = f.replace('<<LINK_COL>>', 'pat_id')
+            elif self.basis == 'Encounter_Based':
+                f = f.replace('<<LINK_TBL>>', 'enc')
+                f = f.replace('<<LINK_COL>>', 'pat_enc_csn_id')
+            
+            base_script += f + '\n\n'
                 
         
         ipenc_lookup = ''
         date_range = ''
-        for key in sql_tables:
+        for key in enc_tables:
             ipenc_lookup += f"select distinct pat_enc_csn_id from xdr_{self.project_id}_{key}\nunion\n"
             date_range += f"select min(to_date({self.csn_tables[key]})) mindate, max(to_date({self.csn_tables[key]})) maxdate\n"
             date_range += f"from xdr_{self.project_id}_{key}\nwhere {self.csn_tables[key]} <= current_date\nunion\n"

@@ -1,4 +1,6 @@
-fetch('../tables.json').then(res => res.json()).then(tables => {
+api_port = 5001
+
+fetch(`http://localhost:${api_port}/api/tables`).then(res => res.json()).then(tables => {
     let html = ""
     let show = true
     tables.forEach(table => {
@@ -28,7 +30,7 @@ fetch('../tables.json').then(res => res.json()).then(tables => {
 })
 
 async function sendJson(json) {
-    const res = await fetch('http://localhost:8000/api/dump', {
+    const res = await fetch(`http://localhost:${api_port}/api/generate`, {
         method: 'POST',
         headers: {"Content-type": "application/json; charset=UTF-8"},
         body: JSON.stringify(json)
