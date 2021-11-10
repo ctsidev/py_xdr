@@ -1,0 +1,57 @@
+-- PROC
+DROP TABLE xdr_<<PROJECT_ID>>_proc PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_proc AS
+SELECT DISTINCT t.pat_id
+    ,t.pat_mrn_id
+    ,t.ip_patient_id
+    ,cpt.pat_enc_csn_id
+    ,cpt.contact_date                   proc_date
+    ,'CPT-preCC'                        proc_type
+    ,cpt.cpt_code                       proc_code 
+    ,eap.proc_name 
+FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
+JOIN i2b2.int_cpt                           cpt ON t.<<LINK_COL>> = cpt.<<LINK_COL>>
+LEFT JOIN clarity_eap                       eap ON cpt.cpt_code = eap.proc_code
+UNION
+SELECT DISTINCT t.pat_id
+    ,t.pat_mrn_id
+    ,t.ip_patient_id
+    ,cpt.pat_enc_csn_id
+    ,cpt.contact_date                   proc_date
+    ,'CPT-'||cpt.source                 proc_type
+    ,cpt.cpt_code                       proc_code 
+    ,eap.proc_name 
+FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
+JOIN i2b2.lz_clarity_cpt_code               cpt ON t.<<LINK_COL>> = cpt.<<LINK_COL>>
+LEFT JOIN clarity_eap                       eap ON cpt.cpt_code = eap.proc_code
+UNION
+SELECT DISTINCT t.pat_id
+    ,t.pat_mrn_id
+    ,t.ip_patient_id
+    ,px.pat_enc_csn_id
+    ,px.effective_date                  proc_date       
+    ,'ICD-9' proc_type
+    ,px.icd9_code                       proc_code
+    ,icd.icd_desc                       proc_name
+FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
+JOIN i2b2.int_proc                          px ON t.<<LINK_COL>> = px.<<LINK_COL>>
+LEFT JOIN i2b2.lz_dx_px_lookup              icd ON px.icd9_code = icd.code
+    AND icd.code_type = 'PX' 
+    AND icd.icd_type = 9
+UNION
+SELECT DISTINCT t.pat_id
+    ,t.pat_mrn_id
+    ,t.ip_patient_id
+    ,px.pat_enc_csn_id
+    ,px.proc_date       
+    ,CASE
+        WHEN px.icd_code_set = 'ICD-9-CM Volume 3' 
+            THEN 'ICD-9'
+        WHEN px.icd_code_set = 'ICD-10-PCS' 
+            THEN 'ICD-10'
+        END                             proc_type
+    ,px.px_code                         proc_code
+    ,px.procedure_name                  proc_name
+FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
+JOIN i2b2.lz_clarity_procedures             px ON t.<<LINK_COL>> = px.<<LINK_COL>>
+;

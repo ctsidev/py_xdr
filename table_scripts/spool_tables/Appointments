@@ -1,0 +1,11 @@
+spool Data/Appointments.csv
+select distinct ip_patient_id
+    ,ip_enc_id
+<<COLS>>
+from xdr_<<PROJECT_ID>>_appt        appt
+join xdr_<<PROJECT_ID>>_ipenc    ipenc   on appt.pat_enc_csn_id = ipenc.pat_enc_csn_id
+order by ip_patient_id
+    ,ip_enc_id
+;
+spool off
+

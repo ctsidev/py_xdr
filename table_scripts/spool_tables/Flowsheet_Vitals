@@ -1,0 +1,13 @@
+spool Data/Flowsheet_Vitals.csv
+select distinct ip_patient_id
+    ,ip_enc_id
+    ,vital_sign_type
+    ,vital_sign_value
+    ,vital_sign_taken_time
+from xdr_<<PROJECT_ID>>_flow        flow
+join xdr_<<PROJECT_ID>>_ipenc    ipenc   on flow.pat_enc_csn_id = ipenc.pat_enc_csn_id
+order by ip_patient_id
+    ,ip_enc_id
+;
+spool off
+

@@ -1,0 +1,266 @@
+[
+    {
+        "NAME": "Patient_Demographics",
+        "TABLES": ["pat"],
+        "ELEMENTS": [
+            "AGE",
+            "SEX",
+            "RACE",
+            "ETHNICITY",
+            "VITAL_STATUS",
+            "LAST_ENCOUNTER_YEAR",
+            "LANGUAGE",
+            "MARITAL_STATUS",
+            "SEXUAL_ORIENTATION",
+            "RELIGION"
+        ]
+    },
+    {
+        "NAME": "Patient_Identifiers",
+        "TABLES": ["pat"],
+        "ELEMENTS": [
+            "MRN",
+            "DOB",
+            "NAME",
+            "ADDRESS",
+            "CITY",
+            "STATE",
+            "ZIP_CODE",
+            "PHONE",
+            "EMAIL",
+            "DEATH_DATE",
+            "FIRST_ENCOUNTER_DATE",
+            "LAST_ENCOUNTER_YEAR"
+        ]
+    },
+    {
+        "NAME": "Encounters",
+        "TABLES": ["enc"],
+        "ELEMENTS": [
+            "EPIC_ENCOUNTER_TYPE",
+            "IP_VISIT_TYPE",
+            "ENCOUNTER_DATE",
+            "ENCOUNTER_AGE",
+            "ADMIT_DATE",
+            "DISCHARGE_DATE",
+            "HOSPITAL_DISCHARGE_DISPOSITION",
+            "ED_DISPOSITION",
+            "IP_VISIT_PROVIDER_ID",
+            "EPIC_DEPARTMENT_ID",
+            "EPIC_DEPARTMENT_NAME",
+            "DEPARTMENT_SPECIALTY",
+            "LOCATION"
+        ]
+    },
+    {
+        "NAME": "Providers",
+        "TABLES": ["prv"],
+        "ELEMENTS": [
+            "PROVIDER_NAME",
+            "PROVIDER_GENDER",
+            "PROVIDER_TYPE",
+            "PRIMARY_SPECIALTY",
+            "UCLA_EMPLOYEE_FLAG"
+        ]
+    },
+    {
+        "NAME": "Hospital_Unit_Transfers",
+        "TABLES": ["adt"],
+        "ELEMENTS": [
+            "PROVIDER_NAME",
+            "PROVIDER_GENDER",
+            "PROVIDER_TYPE",
+            "PRIMARY_SPECIALTY",
+            "UCLA_EMPLOYEE_FLAG"
+        ]
+    },
+    {
+        "NAME": "Encounter_Diagnoses",
+        "TABLES": ["encdx"],
+        "ELEMENTS": [
+            "DIAGNOSIS_DATE",
+            "ICD_TYPE",
+            "ICD_CODE",
+            "ICD_DESCRIPTION",
+            "PRIMARY_DIAGNOSIS_FLAG",
+            "ADMISSION_DIAGNOSIS_FLAG",
+            "PRESENT_ON_ADMISSION",
+            "HOSPITAL_FINAL_DIAGNOSIS"
+        ]
+    },
+    {
+        "NAME": "Procedures",
+        "TABLES": ["proc"],
+        "ELEMENTS": [
+            "PROCEDURE_DATE",
+            "PROCEDURE_TYPE",
+            "PROCEDURE_CODE",
+            "PROCEDURE_DESCRIPTION"
+        ]
+    },
+    {
+        "NAME": "Problem_Lists",
+        "TABLES": ["pl"],
+        "ELEMENTS": [
+            "ICD_TYPE",
+            "ICD_CODE",
+            "ICD_DESCRIPTION",
+            "PROBLEM_DESCRIPTION",
+            "NOTED_DATE",
+            "DATE_OF_ENTRY",
+            "DELETED_DATE",
+            "RESOLVED_DATE",
+            "PROBLEM_STATUS",
+            "PROBLEM_COMMENT",
+            "PRIORITY"
+        ]
+    },
+    {
+        "NAME": "Appointments",
+        "TABLES": ["appt"],
+        "ELEMENTS": [
+            "APPOINTMENT_DATE_TIME",
+            "APPOINTMENT_MADE_DATE_TIME",
+            "DEPARTMENT_ID",
+            "DEPARTMENT_NAME",
+            "DEPARTMENT_SPECIALTY_NAME",
+            "CENTER_NAME",
+            "LOCATION_NAME",
+            "PROV_NAME_W_ID",
+            "REFERRING_PROV_NAME_W_ID",
+            "PROCEDURE_NAME",
+            "APPOINTMENT_CONFIRMATION_STATUS",
+            "APPOINTMENT_STATUS"
+        ]
+    },
+    {
+        "NAME": "Flowsheet_Vitals",
+        "TABLES": ["flow"],
+        "ELEMENTS": [
+            "BMI",
+            "HEIGHT",
+            "WEIGHT",
+            "BLOOD_PRESSURE",
+            "PULSE",
+            "TEMPERATURE",
+            "RESPIRATORY_RATE",
+            "O2 SATURATION (SPO2)"
+        ]
+    },
+    {
+        "NAME": "Labs",
+        "TABLES": ["lab"],
+        "ELEMENTS": [
+            "COMPONENT_ID",
+            "COMPONENT_NAME",
+            "SPECIMEN_TAKEN_DATE_TIME",
+            "PROCEDURE_ID",
+            "PROCEDURE_DESCRIPTION",
+            "ORDER_TIME",
+            "RESULT",
+            "REFERENCE_UNIT",
+            "LOINC"
+        ]
+    },
+    {
+        "NAME": "Medications",
+        "TABLES": ["med"],
+        "ELEMENTS": [
+            "ORDER_DATE",
+            "START_DATE",
+            "END_DATE",
+            "EPIC_MEDICATION_ID",
+            "EPIC_MEDICATION_NAME",
+            "MEDISPAN_GENERIC_NAME",
+            "MEDISPAN_CLASS_NAME",
+            "QUANTITY",
+            "REFILLS",
+            "SIG",
+            "TAKEN_DATE_TIME",
+            "FREQUENCY"
+        ]
+    },
+    {
+        "NAME": "Social_History",
+        "TABLES": ["soc"],
+        "ELEMENTS": [
+            "SEXUALLY_ACTIVE",
+            "FEMALE_PARTNER",
+            "MALE_PARTNER",
+            "SMOKING_TOBACCO_USER",
+            "TOBACCO_PACK_PER_DAY",
+            "TOBACCO_USED_YEARS",
+            "TOBACCO_USER",
+            "TOBACCO_TYPE",
+            "SMOKING_START_DATE",
+            "SMOKING_QUIT_DATE",
+            "ALCOHOL_USER",
+            "ALCOHOL_OUNCES_PER_WEEK",
+            "ALCOHOL_COMMENTS",
+            "ALCOHOL_TYPE",
+            "IV_DRUG_USER",
+            "ILLICIT_DRUG_FREQUENCY",
+            "ILLICIT_DRUG_COMMENT"
+        ]
+    },
+    {
+        "NAME": "Family_History",
+        "TABLES": ["fam"],
+        "ELEMENTS": [
+            "MEDICAL_HISTORY",
+            "RELATION"
+        ]
+    },
+    {
+        "NAME": "Provider_Notes",
+        "TABLES": ["note"],
+        "ELEMENTS": [
+            "NOTE_TYPE",
+            "CREATE_DATE",
+            "CREATE_BY",
+            "LINE_NUMBER",
+            "NOTE_TEXT",
+            "CONTACT_DATE"
+        ]
+    },
+    {
+        "NAME": "Pathology",
+        "TABLES": ["opr", "path"],
+        "ELEMENTS": [
+            "ORDER_TIME",
+            "RESULT_TIME",
+            "DESCRIPTION",
+            "COMPONENT_NAME",
+            "COMPONENT_COMMENT",
+            "SPECIMEN_SOURCE",
+            "SPECIMEN_TYPE",
+            "SPECIMEN_TAKEN_TIME",
+            "RESULT_TXT"
+        ]
+    },
+    {
+        "NAME": "Imaging",
+        "TABLES": ["opr", "img"],
+        "ELEMENTS": [
+            "ORDER_TIME",
+            "RESULT_TIME",
+            "PROCEDURE_CODE",
+            "PROCEDURE_NAME",
+            "NARRATIVE",
+            "IMPRESSION"
+        ]
+    },
+    {
+        "NAME": "Microbiology",
+        "TABLES": ["opr", "mic"],
+        "ELEMENTS": [
+            "ORDER_TIME",
+            "RESULT_TIME",
+            "PROCEDURE_CODE",
+            "PROCEDURE_NAME",
+            "SPECIMEN_SOURCE",
+            "SPECIMEN_TYPE",
+            "SUSCEPTIBILITY_SENSITIVITY"
+        ]
+    }
+]

@@ -1,0 +1,45 @@
+-- ENCDX
+DROP TABLE xdr_<<PROJECT_ID>>_encdx PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_encdx AS
+SELECT DISTINCT t.pat_id
+    ,t.pat_mrn_id
+    ,t.ip_patient_id
+    ,dx.pat_enc_csn_id
+    ,dx.effective_date      diagnosis_date
+    ,9 icd_type
+    ,dx.icd9_code           icd_code
+    ,dx.source
+    ,icd.icd_desc
+    ,NULL                   primary_diagnosis_flag
+    ,NULL                   admit_diagnosis_flag
+    ,NULL                   present_on_admit_flag
+    ,NULL                   hsp_final_diagnosis_flag
+FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
+JOIN i2b2.int_dx                            dx ON t.<<LINK_COL>> = dx.<<LINK_COL>>
+LEFT JOIN i2b2.lz_dx_px_lookup              icd ON dx.icd9_code = icd.code
+    AND icd.code_type = 'DX' 
+    AND icd.icd_type = 9
+WHERE trunc(dx.effective_date) <= to_date('09/30/2015','mm/dd/yyyy')
+UNION
+SELECT DISTINCT t.pat_id
+    ,t.pat_mrn_id          
+    ,t.ip_patient_id		 
+    ,dx.pat_enc_csn_id
+    ,dx.contact_date         
+    ,CASE WHEN trunc(dx.contact_date) <= to_date('09/30/2015','mm/dd/yyyy') THEN 9
+        ELSE 10 END          icd_type
+    ,dx.icd_code             
+    ,'CLARITY'               source        
+    ,icd.icd_desc            
+    ,dx.PRIMARY_SEC_FLAG	 
+    ,dx.ADMIT_DX_FLAG	 
+    ,dx.POA_FLAG		 
+    ,dx.HSP_FINAL_DX_FLAG
+FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
+join i2b2.lz_clarity_diagnosis_new          dx ON t.<<LINK_COL>> = dx.<<LINK_COL>>
+LEFT JOIN i2b2.lz_dx_px_lookup              icd ON dx.icd_code = icd.code
+    AND dx.icd_type = icd.icd_type
+    AND icd.code_type = 'DX' 
+WHERE ( trunc(dx.contact_date) <= to_date('09/30/2015','mm/dd/yyyy') AND dx.icd_type = 9 )
+    OR ( trunc(dx.contact_date) > to_date('09/30/2015','mm/dd/yyyy') AND dx.icd_type = 10 )
+;

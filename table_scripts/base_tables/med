@@ -1,0 +1,53 @@
+-- MED
+DROP TABLE xdr_<<PROJECT_ID>>_med PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_med AS
+SELECT DISTINCT t.pat_id
+    ,t.pat_mrn_id
+    ,t.ip_patient_id
+    ,med.pat_enc_csn_id
+    ,med.order_med_id
+    ,med.used_med_id                            medication_id
+    ,med.medication_name
+    ,med.generic_name
+    ,med.ordering_mode
+    ,med.ordering_date
+    ,med.start_date
+    ,med.end_date
+    ,med.order_status
+    ,xmrs.NAME                                  result
+    ,nvl(mar.taken_time, med.ordering_date)     taken_time_order_date
+    ,nvl(mar.sig, med.hv_discrete_dose)         dose
+    ,mar.taken_time
+    ,coalesce(mar.sig,med.sig)                  sig
+    ,med.dose_unit
+    ,med.order_class
+    ,med.last_admin_inst
+    ,med.quantity
+    ,med.pharm_class
+    ,med.thera_class
+    ,med.pharm_subclass
+    ,med.freq_name                              frequency
+    ,med.refills
+FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
+JOIN i2b2.lz_clarity_meds                   med ON t.<<LINK_COL>> = med.<<LINK_COL>>
+LEFT JOIN mar_admin_info                    mar ON med.order_med_id = mar.order_med_id
+LEFT JOIN zc_mar_rslt                       xmrs ON mar.mar_action_c = xmrs.result_c
+WHERE ((med.ordering_mode = 'Inpatient'                                       
+        AND nvl(mar.taken_time,to_date('01/01/0001','mm/dd/yyyy')) <> to_date('01/01/0001','mm/dd/yyyy')
+        AND nvl(mar.sig,-1) > 0
+        AND nvl(mar.mar_action_c,-1) <> 125
+    ) 
+        OR med.ordering_mode != 'Inpatient'
+    )
+AND med.used_med_id IS NOT NULL
+;
+
+drop table xdr_<<PROJECT_ID>>_med_ipid purge;
+create table xdr_<<PROJECT_ID>>_med_ipid as
+select order_med_id
+    ,i2b2.f_get_deid_new(4, order_med_id, <<PROJECT_ID>>)  ip_order_med_id
+from (
+    select distinct order_med_id 
+    from xdr_<<PROJECT_ID>>_med
+)
+;

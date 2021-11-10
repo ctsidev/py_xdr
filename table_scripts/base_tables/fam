@@ -1,0 +1,18 @@
+-- FAM
+DROP TABLE xdr_<<PROJECT_ID>>_fam PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_fam AS
+SELECT DISTINCT pat.pat_id 
+    ,pat.pat_mrn_id
+    ,pat.ip_patient_id
+    ,fam.pat_enc_csn_id       
+    ,fam.line
+    ,fam.medical_hx_c
+    ,xmh.NAME                  AS medical_hx
+    ,fam.relation_c
+    ,xrc.NAME                  AS relation
+FROM xdr_<<PROJECT_ID>>_pat                              pat
+JOIN family_hx                fam ON pat.pat_id = fam.pat_id
+LEFT JOIN zc_medical_hx       xmh ON fam.medical_hx_c = xmh.medical_hx_c
+LEFT JOIN zc_msg_caller_rel   xrc ON fam.relation_c = xrc.msg_caller_rel_c 
+WHERE fam.pat_enc_date_real = (SELECT MAX(fam.pat_enc_date_real) FROM clarity.family_hx fam WHERE fam.pat_id = pat.pat_id)
+;

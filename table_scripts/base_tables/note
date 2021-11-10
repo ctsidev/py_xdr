@@ -1,0 +1,69 @@
+-- NOTE
+DROP TABLE xdr_<<PROJECT_ID>>_note PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_note AS
+SELECT x.*
+FROM (
+    SELECT pat.pat_id
+        ,pat.pat_mrn_id
+        ,pat.ip_patient_id
+        ,info.pat_enc_csn_id
+        ,info.note_id
+        ,info.create_instant_dttm
+        ,info.current_author_id
+        ,CASE
+            WHEN info.current_author_id IS NOT NULL 
+                THEN info.current_author_id || ' - ' || emp.name
+            ELSE NULL
+            END                                 author
+        ,info.lst_filed_inst_dttm
+        ,info.ip_note_type_c
+        ,xnti.NAME                              note_type_inpatient
+        ,info.note_type_noadd_c 
+        ,xnt.NAME                               note_type_general
+        ,text.line              
+        ,text.note_text         
+        ,text.contact_date      
+        ,text.contact_date_real 
+        ,MAX(text.contact_date_real) 
+            OVER (PARTITION BY text.note_id)    latest_note
+        FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
+        JOIN hno_info                               info        ON t.<<LINK_COL>> = info.<<LINK_COL>>
+        JOIN hno_note_text                          text        ON info.note_id = text.note_id
+        LEFT JOIN clarity_emp                       emp         ON info.current_author_id = emp.user_id
+        LEFT JOIN zc_note_type                      xnt         ON info.note_type_noadd_c = xnt.note_type_c
+        LEFT JOIN zc_note_type_ip                   xnti        ON info.ip_note_type_c = xnti.type_ip_c
+        WHERE trim(text.note_text) IS NOT NULL
+        AND (info.note_type_noadd_c NOT IN ('38'         --Bookmark
+                ,'46'                                    --Address Verification Message
+                ,'97'                                    --Reg History Event
+                ,'79'                                    --History Overview
+                ,'84'                                    --Treatment Summary
+                ,'28'                                    --Communication Body
+                ,'75'                                    --Cosign with Attestation Text
+                ,'45'                                    --Coding Query
+            )                                     
+            OR info.ip_note_type_c NOT IN ('100001'      --Miscellaneous
+                ,'11'                                    --OR Surgeon
+                ,'30400080013'                           --Scanned Oncology
+                ,'61253'                                 --Inpatient Medication Chart
+                ,'61254'                                 --Outpatient Medication Chart
+                ,'230001'                                --Adm Close
+                ,'1000005'                               --Downtime Event Note
+                ,'3040004003'                            --Abstraction Note
+                ,'2100000001'                            --Teen Confidential
+                ,'99999'                                 --Hard Deleted Note
+            )                              
+        )
+    ) x 
+WHERE x.contact_date_real = latest_note
+;
+
+DROP TABLE xdr_<<PROJECT_ID>>_note_ipid PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_note_ipid AS
+SELECT note_id
+    ,i2b2.f_get_new_deid(4, note_id, <<PROJECT_ID>>)    ip_note_id
+FROM (
+    SELECT DISTINCT note_id 
+    FROM xdr_<<PROJECT_ID>>_note
+)
+;

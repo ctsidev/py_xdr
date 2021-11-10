@@ -1,0 +1,17 @@
+-- PAT
+DROP TABLE xdr_<<PROJECT_ID>>_pat PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_pat AS
+SELECT DISTINCT pat.pat_id
+    ,pat.pat_mrn_id
+    ,i2b2.f_get_deid_new(1, pat.pat_id, <<PROJECT_ID>>)             ip_patient_id
+    ,pat.birth_date                                                 dob
+    ,pat.ethnic_group                                               ethnicity
+    ,pat.mapped_race_name                                           race
+    ,pat.sex
+    ,pat.cur_pcp_prov_id
+    ,to_number(i2b2.f_death(pat.pat_id, 3, 1))                      age
+    ,i2b2.f_death(pat.pat_id, 2, 1)                                 vital_status
+    ,to_date(i2b2.f_death(pat.pat_id, 1, 1), 'mm/dd/yyyy hh24:mi')  death_date
+FROM i2b2.lz_clarity_patient        pat
+JOIN xdr_<<PROJECT_ID>>_coh         coh ON pat.pat_id = coh.pat_id
+;

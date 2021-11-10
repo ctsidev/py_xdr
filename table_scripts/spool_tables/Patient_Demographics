@@ -1,0 +1,8 @@
+spool Data/Patient_Demographics.csv
+select distinct ip_patient_id
+<<COLS>>
+from xdr_<<PROJECT_ID>>_pat
+order by ip_patient_id
+;
+spool off
+

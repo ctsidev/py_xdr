@@ -1,0 +1,83 @@
+-- SOC
+DROP TABLE xdr_<<PROJECT_ID>>_soc PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_soc AS
+SELECT DISTINCT coh.ip_patient_id
+    ,coh.pat_id
+    ,xsa.NAME                           sexually_active
+    ,s.female_partner_yn                female_partner
+    ,s.male_partner_yn                  male_partner
+    ,xsm.NAME                           smoking_tobacco_user
+    ,s.tobacco_pak_per_dy               tobacco_pack_per_day
+    ,s.tobacco_used_years
+    ,xtb.NAME                           tobacco_user
+    ,s.cigarettes_yn                    cigarettes
+    ,s.pipes_yn                         pipe
+    ,s.cigars_yn                        cigar
+    ,s.chew_yn                          chew
+    ,s.snuff_yn                         snuff
+    ,case 
+        when substr((decode(s.cigarettes_yn,'Y','Cigarettes','N',null) 
+                || decode(s.pipes_yn,'Y',', Pipes','N',null) 
+                || decode(s.cigars_yn,'Y',', Cigars','N',null) 
+                || decode(s.chew_yn,'Y',', Chew','N',null) 
+                || decode(s.snuff_yn,'Y',', Snuff','N',null)
+                ),1,2) = ', ' 
+        then substr((decode(s.cigarettes_yn,'Y','Cigarettes','N',null) 
+                || decode(s.pipes_yn,'Y',', Pipes','N',null) 
+                || decode(s.cigars_yn,'Y',', Cigars','N',null) 
+                || decode(s.chew_yn,'Y',', Chew','N',null) 
+                || decode(s.snuff_yn,'Y',', Snuff','N',null)
+                    ),3)
+        when s.cigarettes_yn='N' AND s.pipes_yn='N' AND s.cigars_yn='N' AND s.chew_yn='N' AND s.snuff_yn='N' then 'None'
+        else decode(s.cigarettes_yn,'Y','Cigarettes','N',null) 
+        || decode(s.pipes_yn,'Y',', Pipes','N',null) 
+        || decode(s.cigars_yn,'Y',', Cigars','N',null) 
+        || decode(s.chew_yn,'Y',', Chew','N',null) 
+        || decode(s.snuff_yn,'Y',', Snuff','N',null)
+        end                             tobacco_form
+    ,s.smoking_start_date
+    ,s.smoking_quit_date
+    ,xal.NAME                           alcohol_user
+    ,s.alcohol_oz_per_wk                alcohol_ounces_per_week
+    ,s.alcohol_comment                  alcohol_comments
+    ,LISTAGG(soa.alcohol_drinks_wk || ' ' || xdt.NAME || decode(soa.alcohol_drinks_wk,null,null,' per week'), ', ') WITHIN GROUP (ORDER BY coh.pat_id, s.contact_date) 
+                                        alcohol_type
+    ,s.iv_drug_user_yn                  iv_drug_user
+    ,xdrug.name                         illicit_drug_user
+    ,s.illicit_drug_freq                illicit_drug_frequency
+    ,s.illicit_drug_cmt                 illicit_drug_comments 
+    ,s.pat_enc_date_real
+FROM xdr_<<PROJECT_ID>>_pat     coh 
+LEFT JOIN social_hx             s           ON coh.pat_id = s.pat_id
+LEFT JOIN social_hx_alc_use     soa         ON s.pat_enc_csn_id = soa.pat_enc_csn_id 
+LEFT JOIN zc_sexually_active    xsa         ON s.sexually_active_c = xsa.sexually_active_c 
+LEFT JOIN zc_tobacco_user       xtb         ON s.tobacco_user_c = xtb.tobacco_user_c 
+LEFT JOIN zc_smoking_tob_use    xsm         ON s.smoking_tob_use_c = xsm.smoking_tob_use_c 
+LEFT JOIN zc_alcohol_use        xal         ON s.alcohol_use_c = xal.alcohol_use_c 
+LEFT JOIN zc_hx_drink_types     xdt         ON soa.hx_drink_types_c = xdt.hx_drink_types_c 
+left join zc_alcohol_use        xdrug       on s.ill_drug_user_c = xdrug.alcohol_use_c
+GROUP BY coh.ip_patient_id
+    ,coh.pat_id
+    ,xsa.NAME 
+    ,s.female_partner_yn 
+    ,s.male_partner_yn 
+    ,xsm.NAME 
+    ,s.tobacco_pak_per_dy 
+    ,s.tobacco_used_years
+    ,xtb.NAME 
+    ,s.cigarettes_yn 
+    ,s.pipes_yn 
+    ,s.cigars_yn 
+    ,s.chew_yn 
+    ,s.snuff_yn 
+    ,s.smoking_start_date
+    ,s.smoking_quit_date
+    ,xal.NAME 
+    ,s.alcohol_oz_per_wk 
+    ,s.alcohol_comment 
+    ,s.iv_drug_user_yn 
+    ,xdrug.name
+    ,s.illicit_drug_freq 
+    ,s.illicit_drug_cmt  
+    ,s.pat_enc_date_real
+;

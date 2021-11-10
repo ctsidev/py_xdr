@@ -1,0 +1,84 @@
+-- PATH
+DROP TABLE xdr_<<PROJECT_ID>>_path PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_path AS
+SELECT DISTINCT opr.*
+    ,ip_order_proc_id
+FROM xdr_<<PROJECT_ID>>_opr         opr
+JOIN xdr_<<PROJECT_ID>>_opr_ipid    ip      ON opr.order_proc_id = ip.order_proc_id
+WHERE order_type_c = 59
+;
+
+drop table xdr_<<PROJECT_ID>>_path_ipacc purge;
+create table xdr_<<PROJECT_ID>>_path_ipacc as
+select acc_num
+    ,i2b2.f_get_deid_new(6, acc_num, <<PROJECT_ID>>)    ip_accession_number
+from (
+    select distinct acc_num 
+    from xdr_<<PROJECT_ID>>_path
+)
+;
+
+-- PATH_RES
+drop table xdr_<<PROJECT_ID>>_path_res purge;
+create table xdr_<<PROJECT_ID>>_path_res as
+SELECT opr.order_proc_id
+    ,pathmain.ip_order_proc_id
+    ,opr.component_id
+    ,opr.component_name
+    --,opr.result
+    ,opr.line 
+    ,1                      sorter
+    ,rcc.line_comment       result_sort
+    ,rcc.results_comp_cmt   result_txt
+FROM xdr_<<PROJECT_ID>>_opr             opr
+JOIN xdr_<<PROJECT_ID>>_path            pathmain    on opr.order_proc_id = pathmain.order_proc_id
+LEFT JOIN clarity.order_res_comp_cmt    rcc         ON opr.order_proc_id = rcc.order_id and opr.line = rcc.line_comp
+WHERE trim(rcc.results_comp_cmt) is not null
+    and rcc.results_comp_cmt != 'This result contains rich text formatting which cannot be displayed here.'
+UNION
+SELECT opr.order_proc_id
+    ,pathmain.ip_order_proc_id
+    ,opr.component_id
+    ,opr.component_name
+    --,opr.result
+    ,opr.line
+    ,2                      sorter
+    ,rcc.line_comment       result_sort
+    ,rcc.results_cmt        result_text
+FROM xdr_<<PROJECT_ID>>_opr         opr
+JOIN xdr_<<PROJECT_ID>>_path        pathmain    on opr.order_proc_id = pathmain.order_proc_id
+LEFT JOIN clarity.order_res_comment rcc         ON opr.order_proc_id = rcc.order_id and opr.line = rcc.line
+WHERE rcc.results_cmt is not null 
+    and rcc.results_cmt != 'This result contains rich text formatting which cannot be displayed here.'
+UNION
+select opr.order_proc_id
+    ,pathmain.ip_order_proc_id
+    ,opr.component_id
+    ,opr.component_name
+    --,OVRrc.COMPONENT_ID
+    ,OVRTxt.GROUP_LINE              line
+    ,3                              sorter
+    ,OVRTxt.VALUE_LINE              result_sort
+    ,OVRTxt.MULT_LN_VAL_STORAGE     result_text
+FROM xdr_<<PROJECT_ID>>_opr         opr
+JOIN xdr_<<PROJECT_ID>>_path        pathmain    on opr.order_proc_id = pathmain.order_proc_id
+left JOIN SPEC_TEST_REL             OVS         on opr.order_proc_id = OVS.SPEC_TST_ORDER_ID
+LEFT JOIN RES_COMPONENTS            OVRrc       ON OVS.RESULT_TO_PRINT_ID = OVRrc.RESULT_ID AND opr.component_id = OVRrc.COMPONENT_ID
+LEFT JOIN RES_VAL_PTR_RM            OVRTxtPtr   ON OVRrc.RESULT_ID = OVRTxtPtr.RESULT_ID AND OVRrc.LINE = OVRTxtPtr.GROUP_LINE
+LEFT JOIN RES_VAL_DATA_RM           OVRTxt      ON OVRTxtPtr.RESULT_ID = OVRTxt.RESULT_ID AND OVRTxtPtr.CMP_MULTILINE_VALUE = OVRTxt.GROUP_LINE
+;   
+
+-- PATH_RES_CMB
+drop table xdr_<<PROJECT_ID>>_path_res_cmb purge;
+create table xdr_<<PROJECT_ID>>_path_res_cmb as
+select pathmain.order_proc_id
+    ,pathmain.ip_order_proc_id
+    ,to_char(RTRIM(XMLAGG(XMLELEMENT(E,pathres.result_txt, '').EXTRACT('//text()') 
+        ORDER BY pathmain.ip_order_proc_id, pathres.component_id, pathres.line, sorter, result_sort).GetClobVal(),','))     
+        AS result_txt
+from xdr_<<PROJECT_ID>>_path        pathmain
+join xdr_<<PROJECT_ID>>_path_res    pathres     on pathmain.order_proc_id = pathres.order_proc_id
+where pathres.result_txt is not null 
+group by pathmain.order_proc_id
+    ,pathmain.ip_order_proc_id
+;

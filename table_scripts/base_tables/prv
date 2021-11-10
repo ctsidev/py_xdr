@@ -1,0 +1,18 @@
+-- PRV
+DROP TABLE xdr_<<PROJECT_ID>>_prv PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_prv AS
+SELECT DISTINCT prv.provider_id
+    ,substr(i2b2.f_get_deid_new(3, <<LINK_COL>>, <<PROJECT_ID>>), 1, 32)    ip_provider_id
+    ,prv.provider_name
+    ,prv.provider_type                                    
+    ,prv.primary_specialty                          
+    ,prv.is_resident_yn
+    ,CASE ser.sex_c WHEN '1' THEN 'Female' WHEN '2' THEN 'Male' WHEN '3' THEN 'Unknown' ELSE NULL END provider_sex
+    ,CASE WHEN emp.user_id IS NOT NULL THEN 'Yes' ELSE NULL END ucla_employee_flag
+    ,ser.email
+    ,ser.office_phone_num
+from xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
+LEFT JOIN clarity.v_cube_d_provider         prv ON t.<<LINK_COL>> = prv.provider_id 
+LEFT JOIN clarity.clarity_ser               ser ON t.<<LINK_COL>> = ser.prov_id 
+LEFT JOIN clarity.clarity_emp               emp ON ser.user_id = emp.user_id
+;

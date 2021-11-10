@@ -1,0 +1,36 @@
+-- PL
+DROP TABLE xdr_<<PROJECT_ID>>_pl PURGE;
+create table xdr_<<PROJECT_ID>>_pl AS
+SELECT DISTINCT t.pat_id
+    ,t.pat_mrn_id
+    ,t.ip_patient_id
+    ,t.pat_enc_csn_id
+    ,pl.problem_list_id
+    ,pl.dx_id
+    ,pl.description                         prob_desc 
+    ,pl.noted_date
+    ,pl.date_of_entry                       update_date
+    ,pl.resolved_date                       resolved_date
+    ,CASE WHEN pl.problem_status_c = 3 
+        THEN pl.date_of_entry
+        ELSE NULL
+        END                                 deleted_date
+    ,zps.name                               problem_status        
+    ,pl.problem_cmt                         problem_cmt     
+    ,zhp.name                               priority
+    ,case when pehp.problem_list_id is null 
+        then 'N' else 'Y' end               hospital_problem
+    ,pehp.PRINCIPAL_PROB_YN principal_yn
+    --,pl.PROBLEM_TYPE_C             --1-MEDICAL   2-NURSING   3-Hospitalization   (in progress)
+    ,pl.chronic_yn                          chronic_yn                  
+    ,ser.prov_id                           
+    ,ser.prov_type          
+    ,prv.primary_specialty      
+FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>    t
+JOIN problem_list                       pl ON <<LINK_STR>> AND rec_archived_yn = 'N'
+left join PAT_ENC_HOSP_PROB             pehp ON pl.problem_list_id = pehp.problem_list_id
+LEFT JOIN clarity_ser                   ser ON pl.entry_user_id = ser.user_id
+LEFT JOIN v_cube_d_provider             prv ON ser.prov_id = prv.provider_id
+LEFT JOIN zc_problem_status             zps ON pl.problem_status_c = zps.problem_status_c
+LEFT JOIN zc_hx_priority                zhp ON pl.priority_c = zhp.hx_priority_c
+;

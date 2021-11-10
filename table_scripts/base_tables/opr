@@ -1,0 +1,63 @@
+-- OPR: IMG / PATH / MIC
+DROP TABLE xdr_<<PROJECT_ID>>_opr PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_opr AS
+SELECT DISTINCT pat.pat_id
+    ,pat.pat_mrn_id
+    ,opr.pat_enc_csn_id
+    ,pat.ip_patient_id
+    ,opr.order_proc_id
+    ,opr.proc_id
+    ,opr.description           
+    ,eap.proc_name
+    ,eap.proc_code
+    ,opr.order_time
+    ,opr.result_time
+    ,opr.order_type_c
+    ,xot.NAME order_type
+    ,opr.abnormal_yn
+    ,opr.order_status_c
+    ,opr.radiology_status_c
+    ,opr.specimen_source_c
+    ,xss.name                   specimen_source
+    ,opr.specimen_type_c
+    ,acc.acc_num
+    ,xpt.NAME                   specimen_type
+    ,res.line
+    ,res.ord_value
+    ,res.component_id
+    ,cmp.NAME                   component_name
+    ,res.component_comment
+    ,res.result_time            res_result_time
+    ,res.result_val_start_ln
+    ,res.result_val_end_ln
+    ,res.result_cmt_start_ln
+    ,res.result_cmt_end_ln
+    ,res.lrr_based_organ_id
+    ,op2.specimn_taken_time     SPECIMEN_TAKEN_TIME
+FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
+JOIN order_proc                             opr     ON t.<<LINK_COL>> = opr.<<LINK_COL>>
+JOIN order_proc_2                           op2     on opr.ORDER_PROC_ID = op2.ORDER_PROC_ID
+LEFT JOIN order_results                     res     ON opr.order_proc_id = res.order_proc_id
+LEFT JOIN order_rad_acc_num                 acc     ON opr.order_proc_id = acc.order_proc_id
+JOIN clarity_eap                            eap     ON opr.proc_id = eap.proc_id
+LEFT JOIN clarity_component                 cmp	    ON res.component_id = cmp.component_id
+LEFT JOIN zc_order_type                     xot     ON opr.order_type_c = xot.order_type_c 
+LEFT JOIN zc_specimen_type                  xpt     ON opr.specimen_type_c = xpt.specimen_type_c
+LEFT JOIN zc_specimen_source                xss     ON opr.specimen_source_c = xss.specimen_source_c
+WHERE opr.order_status_c = 5
+    AND (
+        opr.radiology_status_c = 99     --Imaging
+            or opr.order_type_c = 3         --Microbiology
+            or opr.order_type_c = 59        --Pathology
+    )
+;
+
+drop table xdr_<<PROJECT_ID>>_opr_ipid purge;
+create table xdr_<<PROJECT_ID>>_opr_ipid as
+select order_proc_id
+    ,i2b2.f_get_deid_new(4, order_proc_id, <<PROJECT_ID>>)  ip_order_proc_id
+from (
+    select distinct order_proc_id 
+    from xdr_<<PROJECT_ID>>_opr
+)
+;
