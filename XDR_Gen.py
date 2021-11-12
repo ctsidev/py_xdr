@@ -53,11 +53,12 @@ class XDR_Gen:
                 f = f.replace('<<LINK_TBL>>', 'pat')
                 f = f.replace('<<LINK_COL>>', 'pat_id')
                 f = f.replace('<<PL_LINK_STR>>', 't.pat_id = pl.pat_id')
+                f = f.replace('<<LAB_LINK_STR>>', 'JOIN i2b2.lz_clarity_enc enc ON t.pat_id = enc.pat_id\nJOIN i2b2.lz_clarity_labs lab ON enc.pat_enc_csn_id = lab.pat_enc_csn_id')
             elif self.basis == 'Encounter_Based':
                 f = f.replace('<<LINK_TBL>>', 'enc')
                 f = f.replace('<<LINK_COL>>', 'pat_enc_csn_id')
                 f = f.replace('<<PL_LINK_STR>>', 't.pat_enc_csn_id = pl.problem_ept_csn')
-            
+                f = f.replace('<<LAB_LINK_STR>>', 'JOIN i2b2.lz_clarity_labs lab ON t.pat_enc_csn_id = lab.pat_enc_csn_id')        
             base_script += f + '\n\n'
                 
         

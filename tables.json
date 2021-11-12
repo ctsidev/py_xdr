@@ -12,7 +12,16 @@
             "LANGUAGE",
             "MARITAL_STATUS",
             "SEXUAL_ORIENTATION",
-            "RELIGION"
+            "RELIGION",
+            "ADI_NATRANK",
+            "ADI_STATERNK",
+            "EDUCATION_CD",
+            "INCOME_CD",
+            "SVI_SOCIO_ECON",
+            "SVI_HCOMP_LANG",
+            "SVI_MINO_LANG",
+            "SVI_HTYP_TRANS",
+            "SVI_TOTAL"
         ]
     },
     {
