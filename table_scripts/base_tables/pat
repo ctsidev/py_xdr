@@ -16,7 +16,7 @@ SELECT DISTINCT pat.pat_id
     ,pat.cur_pcp_prov_id
     ,to_number(i2b2.f_death(pat.pat_id, 3, 1))                      AGE
     ,i2b2.f_death(pat.pat_id, 2, 1)                                 VITAL_STATUS
-    ,to_char(i2b2.f_death(pat.pat_id, 1, 1), 'mm/dd/yyyy hh24:mi')  death_date
+    ,i2b2.f_death(pat.pat_id, 1, 1)                                 death_date
     -- ,geo.ADI_NATRANK
     -- ,geo.ADI_STATERNK
     -- ,geo.education_cd
