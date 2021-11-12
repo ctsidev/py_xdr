@@ -7,9 +7,9 @@ SELECT DISTINCT pat.pat_id
     ,pat.ip_patient_id
     ,opr.order_proc_id
     ,opr.proc_id
-    ,opr.description           
-    ,eap.proc_name
-    ,eap.proc_code
+    ,opr.description            procedure_description      
+    ,eap.proc_name              procedure_name
+    ,eap.proc_code              procedure_code
     ,opr.order_time
     ,opr.result_time
     ,opr.order_type_c

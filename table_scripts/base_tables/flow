@@ -50,8 +50,8 @@ SELECT DISTINCT t.pat_id
     ,t.recorded_time            vital_sign_taken_time 
     ,t.measure_value            vital_sign_value
     ,dta.template_name
-    ,dta.display_name
-    ,gpd.disp_name              vital_sign_type
+    ,dta.display_name           vital_sign_type
+    ,gpd.disp_name              
     ,gpd.flo_meas_name
 FROM xdr_<<PROJECT_ID>>_flow_pre2       t   
 JOIN ip_flo_gp_data                     gpd ON coh.flo_meas_id = gpd.flo_meas_id

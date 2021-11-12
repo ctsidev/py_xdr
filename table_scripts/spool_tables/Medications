@@ -1,11 +1,14 @@
 spool Data/Medications.csv
 select distinct ip_patient_id
     ,ip_enc_id
+    ,ip_order_med_id
 <<COLS>>
 from xdr_<<PROJECT_ID>>_med         t
-join xdr_<<PROJECT_ID>>_ipenc    ipenc   on t.pat_enc_csn_id = ipenc.pat_enc_csn_id
+join xdr_<<PROJECT_ID>>_ipenc       ipenc   on t.pat_enc_csn_id = ipenc.pat_enc_csn_id
+join xdr_<<PROJECT_ID>>_med_ipid    ipid    on t.order_med_id = ipid.order_med_id
 order by ip_patient_id
     ,ip_enc_id
+    ,ip_order_med_id
 ;
 spool off
 

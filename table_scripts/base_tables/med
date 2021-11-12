@@ -6,24 +6,24 @@ SELECT DISTINCT t.pat_id
     ,t.ip_patient_id
     ,med.pat_enc_csn_id
     ,med.order_med_id
-    ,med.used_med_id                            medication_id
-    ,med.medication_name
-    ,med.generic_name
+    ,med.used_med_id                            EPIC_MEDICATION_ID
+    ,med.medication_name                        EPIC_MEDICATION_NAME
+    ,med.generic_name                           MEDISPAN_GENERIC_NAME
     ,med.ordering_mode
-    ,med.ordering_date
+    ,med.ordering_date                          ORDER_DATE
     ,med.start_date
     ,med.end_date
     ,med.order_status
     ,xmrs.NAME                                  result
     ,nvl(mar.taken_time, med.ordering_date)     taken_time_order_date
     ,nvl(mar.sig, med.hv_discrete_dose)         dose
-    ,mar.taken_time
+    ,mar.taken_time                             TAKEN_DATE_TIME
     ,coalesce(mar.sig,med.sig)                  sig
     ,med.dose_unit
     ,med.order_class
     ,med.last_admin_inst
     ,med.quantity
-    ,med.pharm_class
+    ,med.pharm_class                            MEDISPAN_CLASS_NAME
     ,med.thera_class
     ,med.pharm_subclass
     ,med.freq_name                              frequency

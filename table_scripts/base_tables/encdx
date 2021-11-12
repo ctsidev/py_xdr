@@ -5,15 +5,15 @@ SELECT DISTINCT t.pat_id
     ,t.pat_mrn_id
     ,t.ip_patient_id
     ,dx.pat_enc_csn_id
-    ,dx.effective_date      diagnosis_date
-    ,9 icd_type
-    ,dx.icd9_code           icd_code
+    ,dx.effective_date      DIAGNOSIS_DATE
+    ,9                      ICD_TYPE
+    ,dx.icd9_code           ICD_CODE
     ,dx.source
-    ,icd.icd_desc
-    ,NULL                   primary_diagnosis_flag
-    ,NULL                   admit_diagnosis_flag
-    ,NULL                   present_on_admit_flag
-    ,NULL                   hsp_final_diagnosis_flag
+    ,icd.icd_desc           ICD_DESCRIPTION
+    ,NULL                   PRIMARY_DIAGNOSIS_FLAG
+    ,NULL                   ADMISSION_DIAGNOSIS_FLAG
+    ,NULL                   PRESENT_ON_ADMISSION
+    ,NULL                   HOSPITAL_FINAL_DIAGNOSIS
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
 JOIN i2b2.int_dx                            dx ON t.<<LINK_COL>> = dx.<<LINK_COL>>
 LEFT JOIN i2b2.lz_dx_px_lookup              icd ON dx.icd9_code = icd.code

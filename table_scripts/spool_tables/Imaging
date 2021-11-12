@@ -1,11 +1,40 @@
 spool Data/Imaging.csv
 select distinct ip_patient_id
     ,ip_enc_id
-<<COLS>>
+    ,ip_order_proc_id
+    ,ip_accession_number
+    ,to_char(order_time, 'mm/dd/yyyy hh24:mi') order_time
+    ,to_char(result_time, 'mm/dd/yyyy hh24:mi') result_time
+    ,procedure_code
+    ,procedure_name
 from xdr_<<PROJECT_ID>>_img         t
-join xdr_<<PROJECT_ID>>_ipenc    ipenc   on t.pat_enc_csn_id = ipenc.pat_enc_csn_id
+join xdr_<<PROJECT_ID>>_ipenc               ipenc   on t.pat_enc_csn_id = ipenc.pat_enc_csn_id
+left join xdr_<<PROJECT_ID>>_img_ipacc      ipacc   on t.acc_num = ipacc.acc_num
 order by ip_patient_id
     ,ip_enc_id
+    ,ip_order_proc_id
+;
+spool off
+
+spool Data/Imaging_Narratives.csv
+select distinct ip_patient_id
+    ,ip_order_proc_id
+    ,line
+    ,narrative
+from xdr_<<PROJECT_ID>>_img_nar
+order by ip_patient_id
+    ,ip_order_proc_id
+;
+spool off
+
+spool Data/Imaging_Impressions.csv
+select distinct ip_patient_id
+    ,ip_order_proc_id
+    ,line
+    ,impression
+from xdr_<<PROJECT_ID>>_img_imp
+order by ip_patient_id
+    ,ip_order_proc_id
 ;
 spool off
 

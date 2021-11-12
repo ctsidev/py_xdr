@@ -6,36 +6,36 @@ SELECT DISTINCT coh.pat_id
     ,coh.ip_patient_id
     ,vsa.pat_enc_csn_id
     ,vsa.appt_status_c
-    ,vsa.appt_status_name    AS appt_status
+    ,vsa.appt_status_name               APPOINTMENT_STATUS
     ,vsa.appt_conf_stat_c
-    ,vsa.appt_conf_stat_name AS appt_confirmation_status 
+    ,vsa.appt_conf_stat_name            APPOINTMENT_CONFIRMATION_STATUS
     ,vsa.appt_block_c
-    ,vsa.appt_block_name     AS appt_block
-    ,vsa.appt_dttm
+    ,vsa.appt_block_name                appt_block
+    ,vsa.appt_dttm                      APPOINTMENT_DATE_TIME
     ,vsa.appt_length
-    ,vsa.appt_made_dttm
-    ,vsa.prc_id              ----  This is the visit type !!!
-    ,clprc.record_type       AS prc_v_type
-    ,clprc.status            AS prc_v_type_status
-    ,clprc.prc_name          AS visit_type
+    ,vsa.appt_made_dttm                 APPOINTMENT_MADE_DATE_TIME
+    ,vsa.prc_id  --  This is the visit type !!!
+    ,clprc.record_type                  prc_v_type
+    ,clprc.status                       prc_v_type_status
+    ,clprc.prc_name                     PROCEDURE_NAME
     ,vsa.checkin_dttm
     ,vsa.checkout_dttm
     ,vsa.cancel_reason_c
-    ,vsa.cancel_reason_name  AS cancel_reason
+    ,vsa.cancel_reason_name             cancel_reason
     ,appt_serial_num
     ,vsa.department_id
     ,vsa.department_name
     ,vsa.dept_specialty_c   
-    ,vsa.dept_specialty_name AS department_specialty
+    ,vsa.dept_specialty_name            DEPARTMENT_SPECIALTY_NAME
     ,vsa.loc_id            
-    ,vsa.loc_name
+    ,vsa.loc_name                       LOCATION_NAME
     ,vsa.center_c      
     ,vsa.center_name
     ,vsa.prov_id
-    ,vsa.prov_name_wid
+    ,vsa.prov_name_wid                  
     ,vsa.referring_prov_id
     ,vsa.referring_prov_name_wid
-FROM xdr_<<PROJECT_ID>>_pat                            coh
-JOIN v_sched_appt           vsa     ON coh.pat_id = vsa.pat_id
-LEFT JOIN clarity_prc       clprc   ON vsa.prc_id = clprc.prc_id
+FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>    coh
+JOIN v_sched_appt                       vsa ON coh.<<LINK_COL>> = vsa.<<LINK_COL>>
+LEFT JOIN clarity_prc                   clprc ON vsa.prc_id = clprc.prc_id
 ;

@@ -8,18 +8,19 @@ FROM (
         ,pat.ip_patient_id
         ,info.pat_enc_csn_id
         ,info.note_id
-        ,info.create_instant_dttm
+        ,info.create_instant_dttm               CREATE_DATE
         ,info.current_author_id
         ,CASE
             WHEN info.current_author_id IS NOT NULL 
                 THEN info.current_author_id || ' - ' || emp.name
             ELSE NULL
-            END                                 author
+            END                                 CREATE_BY
         ,info.lst_filed_inst_dttm
         ,info.ip_note_type_c
         ,xnti.NAME                              note_type_inpatient
         ,info.note_type_noadd_c 
         ,xnt.NAME                               note_type_general
+        ,coalesce(xnti.NAME, xnt.NAME)          note_type
         ,text.line              
         ,text.note_text         
         ,text.contact_date      

@@ -6,16 +6,17 @@ SELECT DISTINCT t.pat_id
     ,t.ip_patient_id
     ,lab.pat_enc_csn_id      
     ,lab.order_proc_id
-    ,lab.order_time
+    ,lab.order_time             
     ,lab.result_time
-    ,lab.specimn_taken_time 
-    ,lab.proc_id
-    ,lab.proc_code
-    ,lab.description
-    ,lab.component_id
-    ,lab.component_name
-    ,lab.ord_value
-    ,lab.reference_unit 
+    ,lab.specimn_taken_time                 SPECIMEN_TAKEN_TIME
+    ,lab.proc_id                            PROCEDURE_ID
+    ,lab.proc_code                          RPOCEDURE_CODE
+    ,lab.description                        PROCEDURE_DESCRIPTION
+    ,lab.component_id                       COMPONENT_ID
+    ,lab.component_name                     COMPONENT_NAME
+    ,lab.ord_value                          RESULT
+    ,lab.reference_unit                     REFERENCE_UNIT
+    ,COALESCE(loinc, bip_loinc_mapping)     LOINC
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
 JOIN i2b2.lz_clarity_labs                   lab ON t.<<LINK_COL>> = lab.<<LINK_COL>>
 ;

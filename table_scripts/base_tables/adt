@@ -5,16 +5,18 @@ SELECT DISTINCT t.pat_id
     ,t.pat_mrn_id
     ,t.ip_patient_id
     ,adt.pat_enc_csn_id
-    ,adt.event_type
+    ,adt.event_type                                     ADT_EVENT_TYPE
     ,adt.in_event_id
-    ,adt.department_id
-    ,adt.department_name
-    ,adt.specialty                      department_specialty                 
-    ,adt.time_in
+    ,adt.department_id                                  EPIC_DEPARTMENT_ID
+    ,adt.department_name                                EPIC_DEPARTMENT_NAME
+    ,adt.specialty                                      DEPARTMENT_SPECIALTY                 
+    ,adt.time_in                                        ADT_EVENT_DATE
     ,adt.time_out
     ,adt.out_event_id
     ,adt.adm_event_id
     ,adt.dis_event_id
+    ,dep.loc_name                                       LOCATION
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>    t
-LEFT JOIN i2b2.lz_clarity_adt           adt ON t.<<LINK_COL>> = adt.<<LINK_COL>>
+JOIN i2b2.lz_clarity_adt                adt ON t.<<LINK_COL>> = adt.<<LINK_COL>>
+left join i2b2.lz_clarity_dept          dep on dep.department_id = t.department_id
 ;

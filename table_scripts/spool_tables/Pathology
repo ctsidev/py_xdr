@@ -1,11 +1,34 @@
 spool Data/Pathology.csv
 select distinct ip_patient_id
     ,ip_enc_id
-<<COLS>>
+    ,ip_order_proc_id
+    ,ip_accession_number
+    ,to_char(order_time, 'mm/dd/yyyy hh24:mi') order_time
+    ,to_char(result_time, 'mm/dd/yyyy hh24:mi') result_time
+    ,procedure_description
+    ,specimen_source
+    ,specimen_type
+    ,SPECIMEN_TAKEN_TIME
 from xdr_<<PROJECT_ID>>_path        t
-join xdr_<<PROJECT_ID>>_ipenc    ipenc   on t.pat_enc_csn_id = ipenc.pat_enc_csn_id
+join xdr_<<PROJECT_ID>>_ipenc               ipenc   on t.pat_enc_csn_id = ipenc.pat_enc_csn_id
+left join xdr_<<PROJECT_ID>>_path_ipacc     ipacc   on t.acc_num = ipacc.acc_num
 order by ip_patient_id
     ,ip_enc_id
+    ,ip_order_proc_id
+;
+spool off
+
+spool Data/Pathology_Results.csv
+select distinct ip_patient_id
+    ,ip_order_proc_id
+    ,component_id
+    ,component_name
+    --,line
+    ,result_txt
+from xdr_<<PROJECT_ID>>_path_res_cmb
+-- from xdr_<<PROJECT_ID>>_path_res
+order by ip_patient_id
+    ,ip_order_proc_id
 ;
 spool off
 

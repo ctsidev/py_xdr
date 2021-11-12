@@ -1,11 +1,14 @@
 spool Data/Labs.csv
 select distinct ip_patient_id
     ,ip_enc_id
+    ,ip_order_proc_id
 <<COLS>>
 from xdr_<<PROJECT_ID>>_lab         t
-join xdr_<<PROJECT_ID>>_ipenc    ipenc   on t.pat_enc_csn_id = ipenc.pat_enc_csn_id
+join xdr_<<PROJECT_ID>>_ipenc       ipenc   on t.pat_enc_csn_id = ipenc.pat_enc_csn_id
+join xdr_<<PROJECT_ID>>_lab_ipid    ipid    on t.order_proc_id = ipid.order_proc_id
 order by ip_patient_id
     ,ip_enc_id
+    ,ip_order_proc_id
 ;
 spool off
 

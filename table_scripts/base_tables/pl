@@ -7,17 +7,17 @@ SELECT DISTINCT t.pat_id
     ,t.pat_enc_csn_id
     ,pl.problem_list_id
     ,pl.dx_id
-    ,pl.description                         prob_desc 
-    ,pl.noted_date
-    ,pl.date_of_entry                       update_date
-    ,pl.resolved_date                       resolved_date
+    ,pl.description                         PROBLEM_DESCRIPTION 
+    ,pl.noted_date                          NOTED_DATE
+    ,pl.date_of_entry                       DATE_OF_ENTRY
+    ,pl.resolved_date                       RESOLVED_DATE
     ,CASE WHEN pl.problem_status_c = 3 
         THEN pl.date_of_entry
         ELSE NULL
-        END                                 deleted_date
-    ,zps.name                               problem_status        
-    ,pl.problem_cmt                         problem_cmt     
-    ,zhp.name                               priority
+        END                                 DELETED_DATE
+    ,zps.name                               PROBLEM_STATUS        
+    ,pl.problem_cmt                         PROBLEM_COMMENT     
+    ,zhp.name                               PRIORITY
     ,case when pehp.problem_list_id is null 
         then 'N' else 'Y' end               hospital_problem
     ,pehp.PRINCIPAL_PROB_YN principal_yn
@@ -25,12 +25,26 @@ SELECT DISTINCT t.pat_id
     ,pl.chronic_yn                          chronic_yn                  
     ,ser.prov_id                           
     ,ser.prov_type          
-    ,prv.primary_specialty      
+    ,prv.primary_specialty 
+    ,case when NOTED_DATE < '10/01/2015' then icd9.icd_type else icd10.icd_type end     ICD_TYPE
+    ,case when NOTED_DATE < '10/01/2015' then icd9.code else icd10.code end             ICD_CODE
+    ,case when NOTED_DATE < '10/01/2015' then icd9.icd_desc else icd10.icd_desc end     ICD_DESCRIPTION     
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>    t
-JOIN problem_list                       pl ON <<LINK_STR>> AND rec_archived_yn = 'N'
+JOIN problem_list                       pl ON <<PL_LINK_STR>> AND rec_archived_yn = 'N'
 left join PAT_ENC_HOSP_PROB             pehp ON pl.problem_list_id = pehp.problem_list_id
 LEFT JOIN clarity_ser                   ser ON pl.entry_user_id = ser.user_id
 LEFT JOIN v_cube_d_provider             prv ON ser.prov_id = prv.provider_id
 LEFT JOIN zc_problem_status             zps ON pl.problem_status_c = zps.problem_status_c
 LEFT JOIN zc_hx_priority                zhp ON pl.priority_c = zhp.hx_priority_c
+  --ICD9 CODES JOIN
+LEFT JOIN clarity.edg_current_icd9      cin9 ON pl.dx_id = cin9.dx_id AND cin9.line = 1
+LEFT JOIN i2b2.lz_dx_px_lookup          icd9 ON cin9.code = icd9.CODE
+                                            AND icd9.code_type = 'DX' 
+                                            AND icd9.icd_type = 9
+
+--ICD10 CODES JOIN
+LEFT JOIN clarity.edg_current_icd10     cin10 ON pl.DX_ID = cin10.dx_id AND cin10.line = 1
+LEFT JOIN i2b2.lz_dx_px_lookup          icd10 ON cin10.code = icd10.CODE
+                                            AND icd10.code_type = 'DX' 
+                                            AND icd10.icd_type = 10
 ;

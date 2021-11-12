@@ -73,6 +73,8 @@ drop table xdr_<<PROJECT_ID>>_path_res_cmb purge;
 create table xdr_<<PROJECT_ID>>_path_res_cmb as
 select pathmain.order_proc_id
     ,pathmain.ip_order_proc_id
+    ,pathmain.component_id
+    ,pathmain.component_name
     ,to_char(RTRIM(XMLAGG(XMLELEMENT(E,pathres.result_txt, '').EXTRACT('//text()') 
         ORDER BY pathmain.ip_order_proc_id, pathres.component_id, pathres.line, sorter, result_sort).GetClobVal(),','))     
         AS result_txt

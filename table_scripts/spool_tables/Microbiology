@@ -1,11 +1,35 @@
 spool Data/Microbiology.csv
-select distinct ip_patient_id
-    ,ip_enc_id
-<<COLS>>
-from xdr_<<PROJECT_ID>>_mic         t
-join xdr_<<PROJECT_ID>>_ipenc    ipenc   on t.pat_enc_csn_id = ipenc.pat_enc_csn_id
-order by ip_patient_id
-    ,ip_enc_id
+select distinct prc.ip_patient_id
+                ,prc.order_proc_id           AS order_proc_id
+                ,to_char(order_time, 'mm/dd/yyyy hh24:mi') order_time
+    ,to_char(result_time, 'mm/dd/yyyy hh24:mi') result_time
+                ,prc.proc_code               AS procedure_code
+                ,prc.description             AS procedure_name
+                ,xps.name                    AS specimen_source
+                ,prc.specimen_type           AS specimen_type
+                ,prc.line                    AS line
+                ,prc.ord_value               AS results
+                ,prc.component_name          AS component
+                ,prc.component_comment       AS component_comment
+                ,org.name                    AS organism_name
+                ,mic.micro_results_cmt       AS results_cmt
+FROM xdr_<<PROJECT_ID>>_opr			prc
+LEFT JOIN xdr_<<PROJECT_ID>>_mic    		mic ON prc.order_proc_id = mic.micro_order_id and prc.line = mic.micro_line   
+LEFT JOIN clarity.zc_specimen_source  xps ON prc.specimen_source_c = xps.specimen_source_c
+LEFT JOIN clarity.clarity_organism	org ON prc.lrr_based_organ_id = org.organism_id
+ORDER BY ip_patient_id, order_proc_id, mic.sort_key
+;
+spool off
+
+spool Data/Microbiology_Susceptibility_Sensitivity.csv
+SELECT DISTINCT mic.ip_patient_id
+    ,mic.order_proc_id       
+    ,mic.organism_name      
+    ,mic.susceptibility
+    ,mic.sensitivity
+    ,mic.antibiotic
+FROM xdr_<<PROJECT_ID>>_mic_org 	      mic
+ORDER BY ip_patient_id, order_proc_id
 ;
 spool off
 

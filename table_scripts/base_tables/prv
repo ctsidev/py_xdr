@@ -7,7 +7,7 @@ SELECT DISTINCT prv.provider_id
     ,prv.provider_type                                    
     ,prv.primary_specialty                          
     ,prv.is_resident_yn
-    ,CASE ser.sex_c WHEN '1' THEN 'Female' WHEN '2' THEN 'Male' WHEN '3' THEN 'Unknown' ELSE NULL END provider_sex
+    ,CASE ser.sex_c WHEN '1' THEN 'Female' WHEN '2' THEN 'Male' WHEN '3' THEN 'Unknown' ELSE NULL END provider_gender
     ,CASE WHEN emp.user_id IS NOT NULL THEN 'Yes' ELSE NULL END ucla_employee_flag
     ,ser.email
     ,ser.office_phone_num

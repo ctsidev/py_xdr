@@ -30,7 +30,7 @@
             "EMAIL",
             "DEATH_DATE",
             "FIRST_ENCOUNTER_DATE",
-            "LAST_ENCOUNTER_YEAR"
+            "LAST_ENCOUNTER_DATE"
         ]
     },
     {
@@ -67,11 +67,12 @@
         "NAME": "Hospital_Unit_Transfers",
         "TABLES": ["adt"],
         "ELEMENTS": [
-            "PROVIDER_NAME",
-            "PROVIDER_GENDER",
-            "PROVIDER_TYPE",
-            "PRIMARY_SPECIALTY",
-            "UCLA_EMPLOYEE_FLAG"
+            "ADT_EVENT_TYPE",
+            "ADT_EVENT_DATE",
+            "EPIC_DEPARTMENT_ID",
+            "EPIC_DEPARTMENT_NAME",
+            "DEPARTMENT_SPECIALTY",
+            "LOCATION"
         ]
     },
     {
@@ -137,14 +138,7 @@
         "NAME": "Flowsheet_Vitals",
         "TABLES": ["flow"],
         "ELEMENTS": [
-            "BMI",
-            "HEIGHT",
-            "WEIGHT",
-            "BLOOD_PRESSURE",
-            "PULSE",
-            "TEMPERATURE",
-            "RESPIRATORY_RATE",
-            "O2 SATURATION (SPO2)"
+            "FLOWSHEETS (Standard Pull)"
         ]
     },
     {
@@ -153,10 +147,12 @@
         "ELEMENTS": [
             "COMPONENT_ID",
             "COMPONENT_NAME",
-            "SPECIMEN_TAKEN_DATE_TIME",
+            "SPECIMEN_TAKEN_TIME",
             "PROCEDURE_ID",
+            "PROCEDURE_CODE",
             "PROCEDURE_DESCRIPTION",
             "ORDER_TIME",
+            "RESULT_TIME",
             "RESULT",
             "REFERENCE_UNIT",
             "LOINC"
@@ -218,7 +214,7 @@
             "NOTE_TYPE",
             "CREATE_DATE",
             "CREATE_BY",
-            "LINE_NUMBER",
+            "LINE",
             "NOTE_TEXT",
             "CONTACT_DATE"
         ]
@@ -227,40 +223,21 @@
         "NAME": "Pathology",
         "TABLES": ["opr", "path"],
         "ELEMENTS": [
-            "ORDER_TIME",
-            "RESULT_TIME",
-            "DESCRIPTION",
-            "COMPONENT_NAME",
-            "COMPONENT_COMMENT",
-            "SPECIMEN_SOURCE",
-            "SPECIMEN_TYPE",
-            "SPECIMEN_TAKEN_TIME",
-            "RESULT_TXT"
+            "PATHOLOGY (Standard Pull)"
         ]
     },
     {
         "NAME": "Imaging",
         "TABLES": ["opr", "img"],
         "ELEMENTS": [
-            "ORDER_TIME",
-            "RESULT_TIME",
-            "PROCEDURE_CODE",
-            "PROCEDURE_NAME",
-            "NARRATIVE",
-            "IMPRESSION"
+            "IMAGING (Standard Pull)"
         ]
     },
     {
         "NAME": "Microbiology",
         "TABLES": ["opr", "mic"],
         "ELEMENTS": [
-            "ORDER_TIME",
-            "RESULT_TIME",
-            "PROCEDURE_CODE",
-            "PROCEDURE_NAME",
-            "SPECIMEN_SOURCE",
-            "SPECIMEN_TYPE",
-            "SUSCEPTIBILITY_SENSITIVITY"
+            "MICROBIOLOGY (Standard Pull)"
         ]
     }
 ]

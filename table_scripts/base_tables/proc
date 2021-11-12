@@ -5,10 +5,10 @@ SELECT DISTINCT t.pat_id
     ,t.pat_mrn_id
     ,t.ip_patient_id
     ,cpt.pat_enc_csn_id
-    ,cpt.contact_date                   proc_date
-    ,'CPT-preCC'                        proc_type
-    ,cpt.cpt_code                       proc_code 
-    ,eap.proc_name 
+    ,cpt.contact_date                   PROCEDURE_DATE
+    ,'CPT-preCC'                        PROCEDURE_TYPE
+    ,cpt.cpt_code                       PROCEDURE_CODE 
+    ,eap.proc_name                      PROCEDURE_DESCRIPTION
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
 JOIN i2b2.int_cpt                           cpt ON t.<<LINK_COL>> = cpt.<<LINK_COL>>
 LEFT JOIN clarity_eap                       eap ON cpt.cpt_code = eap.proc_code

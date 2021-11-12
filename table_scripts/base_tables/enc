@@ -5,16 +5,19 @@ SELECT DISTINCT pat.pat_id
     ,pat.pat_mrn_id
     ,pat.ip_patient_id
     ,enc.pat_enc_csn_id
-    ,enc.effective_date_dt                                  encounter_date
-    ,floor(months_between(effective_date_dt, dob) / 12)     encounter_age
-    ,enc.hosp_admsn_time                                    admit_time
+    ,enc.effective_date_dt                                  ENCOUNTER_DATE
+    ,floor(months_between(effective_date_dt, dob) / 12)     ENCOUNTER_AGE
+    ,enc.hosp_admsn_time                                    
+    ,enc.hosp_admsn_time                                    ADMIT_DATE
     ,enc.hosp_dischrg_time
-    ,enc.encounter_type
-    ,enc.department_id
-    ,eip.disposition
-    ,eip.ed_disposition
-    ,dep.department_name
-    ,dep.specialty                                          department_specialty
+    ,enc.hosp_dischrg_time                                  DISCHARGE_DATE
+    ,enc.encounter_type                                     EPIC_ENCOUNTER_TYPE
+    ,enc.department_id                                      EPIC_DEPARTMENT_ID
+    ,eip.disposition                                        HOSPITAL_DISCHARGE_DISPOSITION
+    ,eip.ed_disposition                                     ED_DISPOSITION
+    ,dep.department_name                                    EPIC_DEPARTMENT_NAME
+    ,dep.specialty                                          DEPARTMENT_SPECIALTY
+    ,dep.loc_name                                           LOCATION
     ,enc.visit_prov_id
     ,CASE evt.visit_type
         WHEN 'ED' THEN 'Emergency Department only'
@@ -29,7 +32,7 @@ SELECT DISTINCT pat.pat_id
         WHEN 'IS' THEN 'Non-Acute Institutional Stay' 
         WHEN 'EO' THEN 'Emergency to Observation'
         WHEN 'IO' THEN 'Inpatient to Observation'
-        ELSE NULL END                                       ip_visit_type
+        ELSE NULL END                                       IP_VISIT_TYPE
 FROM xdr_<<PROJECT_ID>>_pat                     pat
 JOIN i2b2.lz_clarity_enc                        enc ON pat.pat_id = enc.pat_id
 LEFT JOIN i2b2.lz_clarity_enc_inpatient         eip ON enc.pat_enc_csn_id = eip.pat_enc_csn_id

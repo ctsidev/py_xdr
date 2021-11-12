@@ -7,9 +7,9 @@ SELECT DISTINCT pat.pat_id
     ,fam.pat_enc_csn_id       
     ,fam.line
     ,fam.medical_hx_c
-    ,xmh.NAME                  AS medical_hx
+    ,xmh.NAME                   MEDICAL_HISTORY
     ,fam.relation_c
-    ,xrc.NAME                  AS relation
+    ,xrc.NAME                   RELATION
 FROM xdr_<<PROJECT_ID>>_pat                              pat
 JOIN family_hx                fam ON pat.pat_id = fam.pat_id
 LEFT JOIN zc_medical_hx       xmh ON fam.medical_hx_c = xmh.medical_hx_c

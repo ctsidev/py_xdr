@@ -37,6 +37,8 @@ class XDR_Gen:
                 elements = sel_tables[name]
                 cols = ''
                 for element in elements:
+                    if 'date' in element.lower() or 'time' in element.lower() or element.lower() == 'dob':
+                        element = f"to_char({element}, 'mm/dd/yyyy hh24:mi') {element}"
                     cols += f'\t,{element}\n'
 
                 f = open(os.path.join('table_scripts', 'spool_tables', name), 'r').read()
@@ -50,9 +52,11 @@ class XDR_Gen:
             if self.basis == 'Patient_Based':
                 f = f.replace('<<LINK_TBL>>', 'pat')
                 f = f.replace('<<LINK_COL>>', 'pat_id')
+                f = f.replace('<<PL_LINK_STR>>', 't.pat_id = pl.pat_id')
             elif self.basis == 'Encounter_Based':
                 f = f.replace('<<LINK_TBL>>', 'enc')
                 f = f.replace('<<LINK_COL>>', 'pat_enc_csn_id')
+                f = f.replace('<<PL_LINK_STR>>', 't.pat_enc_csn_id = pl.problem_ept_csn')
             
             base_script += f + '\n\n'
                 
