@@ -1,4 +1,6 @@
-api_port = 5001
+import { sendJson, download } from "./functions.js"
+
+const api_port = 5001
 
 fetch(`http://localhost:${api_port}/api/tables`).then(res => res.json()).then(tables => {
     let html = ""
@@ -29,25 +31,6 @@ fetch(`http://localhost:${api_port}/api/tables`).then(res => res.json()).then(ta
     document.getElementById('tables').innerHTML = html
 })
 
-async function sendJson(json) {
-    const res = await fetch(`http://localhost:${api_port}/api/generate`, {
-        method: 'POST',
-        headers: {"Content-type": "application/json; charset=UTF-8"},
-        body: JSON.stringify(json)
-    })
-    const data = await res.json()
-    return data
-}
-
-function download(filename, textInput) {
-    var element = document.createElement('a');
-    element.setAttribute('href','data:text/plain;charset=utf-8, ' + encodeURIComponent(textInput));
-    element.setAttribute('download', filename);
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-}
-
 const form = document.getElementById('main')
 form.addEventListener('submit', e => {
     e.preventDefault()
@@ -76,7 +59,7 @@ form.addEventListener('submit', e => {
         TABLES: tableJson
     }
 
-    sendJson(json).then(data => {
+    sendJson(json, api_port).then(data => {
         for (const [key, value] of Object.entries(data)) {
             download(key, value);
         }

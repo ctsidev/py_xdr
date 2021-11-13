@@ -5,8 +5,7 @@ SELECT DISTINCT pat.pat_id
     ,pat.pat_mrn_id
     ,pat.pat_mrn_id                                                 MRN
     ,i2b2.f_get_deid_new(1, pat.pat_id, <<PROJECT_ID>>)             ip_patient_id
-    ,pat.birth_date                                                 
-    ,to_char(pat.birth_date, 'mm/dd/yyyy hh24:mi')                  DOB
+    ,pat.birth_date                                                 DOB
     ,pat.ethnic_group                                               ETHNICITY
     ,pat.mapped_race_name                                           RACE
     ,pat.sex                                                        SEX
