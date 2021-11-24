@@ -11,8 +11,8 @@ SELECT DISTINCT prv.provider_id
     ,CASE WHEN emp.user_id IS NOT NULL THEN 'Yes' ELSE NULL END ucla_employee_flag
     ,ser.email
     ,ser.office_phone_num
-from xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
-LEFT JOIN clarity.v_cube_d_provider         prv ON t.<<LINK_COL>> = prv.provider_id 
-LEFT JOIN clarity.clarity_ser               ser ON t.<<LINK_COL>> = ser.prov_id 
+from xdr_<<PROJECT_ID>>_enc                 t
+LEFT JOIN clarity.v_cube_d_provider         prv ON t.visit_prov_id = prv.provider_id 
+LEFT JOIN clarity.clarity_ser               ser ON t.visit_prov_id = ser.prov_id 
 LEFT JOIN clarity.clarity_emp               emp ON ser.user_id = emp.user_id
 ;
