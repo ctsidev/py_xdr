@@ -3,12 +3,12 @@ DROP TABLE xdr_<<PROJECT_ID>>_note PURGE;
 CREATE TABLE xdr_<<PROJECT_ID>>_note AS
 SELECT x.*
 FROM (
-    SELECT pat.pat_id
-        ,pat.pat_mrn_id
-        ,pat.ip_patient_id
+    SELECT t.pat_id
+        ,t.pat_mrn_id
+        ,t.ip_patient_id
         ,info.pat_enc_csn_id
         ,info.note_id
-        ,info.create_instant_dttm               CREATE_DATE
+        ,info.create_instant_dttm               CREATE_DATETIME
         ,info.current_author_id
         ,CASE
             WHEN info.current_author_id IS NOT NULL 

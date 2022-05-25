@@ -1,27 +1,35 @@
 -- MIC
 DROP TABLE xdr_<<PROJECT_ID>>_mic PURGE;
 CREATE TABLE xdr_<<PROJECT_ID>>_mic AS
-SELECT micro_order_id
+SELECT ip_patient_id
+    ,micro_order_id
+    ,ip_order_proc_id
     ,micro_results_cmt
     ,micro_line
     ,row_number() over (partition by micro_order_id order by micro_order_id, micro_sorting, micro_line, micro_line_comment) as sort_key
 FROM (
 SELECT 1 AS micro_sorting
+    ,prc.ip_patient_id
     ,rcc.order_id         AS micro_order_id
+    ,ip_order_proc_id
     ,rcc.line_comp        AS micro_line
     ,rcc.results_comp_cmt AS micro_results_cmt
     ,rcc.line_comment     AS micro_line_comment
 FROM xdr_<<PROJECT_ID>>_opr prc
+join xdr_<<PROJECT_ID>>_opr_ipid    ip on prc.order_proc_id = ip.order_proc_id
 LEFT JOIN order_res_comp_cmt rcc ON prc.order_proc_id = rcc.order_id
 WHERE prc.order_type_c = 3
     AND trim(rcc.results_comp_cmt) IS NOT NULL
 UNION
 SELECT 2 AS micro_sorting
+    ,prc.ip_patient_id
     ,rcc.order_id         AS micro_order_id
+    ,ip_order_proc_id
     ,rcc.line             AS micro_line
     ,rcc.results_cmt      AS micro_results_cmt
     ,rcc.line_comment     AS micro_line_comment
 FROM xdr_<<PROJECT_ID>>_opr prc
+join xdr_<<PROJECT_ID>>_opr_ipid    ip on prc.order_proc_id = ip.order_proc_id
 LEFT JOIN order_res_comment rcc ON prc.order_proc_id = rcc.order_id
 WHERE prc.order_type_c = 3
     AND trim(rcc.results_cmt) IS NOT NULL
@@ -30,7 +38,9 @@ WHERE prc.order_type_c = 3
 
 DROP TABLE xdr_<<PROJECT_ID>>_mic_org PURGE;
 CREATE TABLE xdr_<<PROJECT_ID>>_mic_org AS
-SELECT DISTINCT prc.order_proc_id order_proc_id
+SELECT DISTINCT prc.micro_order_id
+    ,ip_patient_id
+    ,prc.ip_order_proc_id
     ,org.name organism_name
     ,xsc.name susceptibility
     ,sns.sensitivity_value sensitivity

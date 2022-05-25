@@ -1,10 +1,10 @@
 -- OPR: IMG / PATH / MIC
 DROP TABLE xdr_<<PROJECT_ID>>_opr PURGE;
 CREATE TABLE xdr_<<PROJECT_ID>>_opr AS
-SELECT DISTINCT pat.pat_id
-    ,pat.pat_mrn_id
+SELECT DISTINCT t.pat_id
+    ,t.pat_mrn_id
     ,opr.pat_enc_csn_id
-    ,pat.ip_patient_id
+    ,t.ip_patient_id
     ,opr.order_proc_id
     ,opr.proc_id
     ,opr.description            procedure_description      

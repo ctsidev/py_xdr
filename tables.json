@@ -141,7 +141,7 @@
         "NAME": "Appointments",
         "TABLES": ["appt"],
         "ELEMENTS": [
-            "APPOINTMENT_DATE_TIME",
+            "APPOINTMENT_DATETIME",
             "APPOINTMENT_MADE_DATETIME",
             "DEPARTMENT_ID",
             "DEPARTMENT_NAME",
@@ -151,7 +151,7 @@
             "PROV_NAME_WID",
             "REFERRING_PROV_NAME_WID",
             "PROCEDURE_NAME",
-            "APPOINTMENT_CONFIRMATION_STATUS",
+            "APPOINTMENT_CONFIRM_STATUS",
             "APPOINTMENT_STATUS"
         ]
     },
@@ -218,7 +218,7 @@
             "ALCOHOL_TYPE",
             "IV_DRUG_USER",
             "ILLICIT_DRUG_FREQUENCY",
-            "ILLICIT_DRUG_COMMENT"
+            "ILLICIT_DRUG_COMMENTS"
         ]
     },
     {
@@ -237,7 +237,7 @@
             "living_w_spouse",
             "daily_stress",
             "phone_communication",
-            "sdh_socialize_freq",
+            "socialize_freq",
             "church_attendance",
             "club_mtg_attend",
             "club_member",
@@ -274,7 +274,7 @@
         "TABLES": ["note"],
         "ELEMENTS": [
             "NOTE_TYPE",
-            "CREATE_DATE",
+            "CREATE_DATETIME",
             "CREATE_BY",
             "LINE_NUMBER",
             "NOTE_TEXT",
