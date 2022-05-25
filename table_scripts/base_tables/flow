@@ -7,7 +7,7 @@ SELECT DISTINCT t.pat_id
     ,enc.inpatient_data_id
     ,rec.fsd_id
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
-join i2b2.lz_clarity_enc                    enc ON coh.<<LINK_COL>> = enc.<<LINK_COL>>
+join i2b2.lz_clarity_enc                    enc ON t.<<LINK_COL>> = enc.<<LINK_COL>>
 JOIN ip_flwsht_rec                          rec ON enc.inpatient_data_id = rec.inpatient_data_id
 ;
 
@@ -21,7 +21,7 @@ SELECT DISTINCT t.pat_id
     ,meas.recorded_time
     ,meas.meas_value measure_value
 FROM xdr_<<PROJECT_ID>>_flow_pre1           t   
-JOIN ip_flwsht_meas                         meas ON coh.fsd_id = meas.fsd_id
+JOIN ip_flwsht_meas                         meas ON t.fsd_id = meas.fsd_id
 WHERE meas.recorded_time IS NOT NULL 
 AND meas.meas_value IS NOT NULL
 AND meas.flo_meas_id IN (
@@ -54,6 +54,6 @@ SELECT DISTINCT t.pat_id
     ,gpd.disp_name              
     ,gpd.flo_meas_name
 FROM xdr_<<PROJECT_ID>>_flow_pre2       t   
-JOIN ip_flo_gp_data                     gpd ON coh.flo_meas_id = gpd.flo_meas_id
-JOIN ip_flt_data                        dta ON coh.flt_id = dta.template_id
+JOIN ip_flo_gp_data                     gpd ON t.flo_meas_id = gpd.flo_meas_id
+JOIN ip_flt_data                        dta ON t.flt_id = dta.template_id
 ; 

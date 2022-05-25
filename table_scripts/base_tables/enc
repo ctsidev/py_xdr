@@ -13,7 +13,7 @@ SELECT DISTINCT pat.pat_id
     ,enc.hosp_dischrg_time                                  DISCHARGE_DATE
     ,enc.encounter_type                                     EPIC_ENCOUNTER_TYPE
     ,enc.department_id                                      EPIC_DEPARTMENT_ID
-    ,eip.disposition                                        HOSPITAL_DISCHARGE_DISPOSITION
+    ,eip.disposition                                        HOSP_DISCHARGE_DISPOSITION
     ,eip.ed_disposition                                     ED_DISPOSITION
     ,dep.department_name                                    EPIC_DEPARTMENT_NAME
     ,dep.specialty                                          DEPARTMENT_SPECIALTY

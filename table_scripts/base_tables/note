@@ -21,7 +21,7 @@ FROM (
         ,info.note_type_noadd_c 
         ,xnt.NAME                               note_type_general
         ,coalesce(xnti.NAME, xnt.NAME)          note_type
-        ,text.line              
+        ,text.line                              line_number
         ,text.note_text         
         ,text.contact_date      
         ,text.contact_date_real 
@@ -62,7 +62,7 @@ WHERE x.contact_date_real = latest_note
 DROP TABLE xdr_<<PROJECT_ID>>_note_ipid PURGE;
 CREATE TABLE xdr_<<PROJECT_ID>>_note_ipid AS
 SELECT note_id
-    ,i2b2.f_get_new_deid(4, note_id, <<PROJECT_ID>>)    ip_note_id
+    ,'IP_' || (note_id + (101101101 * <<PROJECT_ID>>))    ip_note_id
 FROM (
     SELECT DISTINCT note_id 
     FROM xdr_<<PROJECT_ID>>_note

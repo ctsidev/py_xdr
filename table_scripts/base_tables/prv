@@ -2,7 +2,7 @@
 DROP TABLE xdr_<<PROJECT_ID>>_prv PURGE;
 CREATE TABLE xdr_<<PROJECT_ID>>_prv AS
 SELECT DISTINCT prv.provider_id
-    ,substr(i2b2.f_get_deid_new(3, <<LINK_COL>>, <<PROJECT_ID>>), 1, 32)    ip_provider_id
+    ,'IP_' || (bip.deid_prov_id + (101101101 * <<PROJECT_ID>>))    ip_provider_id
     ,prv.provider_name
     ,prv.provider_type                                    
     ,prv.primary_specialty                          
@@ -15,4 +15,5 @@ from xdr_<<PROJECT_ID>>_enc                 t
 LEFT JOIN clarity.v_cube_d_provider         prv ON t.visit_prov_id = prv.provider_id 
 LEFT JOIN clarity.clarity_ser               ser ON t.visit_prov_id = ser.prov_id 
 LEFT JOIN clarity.clarity_emp               emp ON ser.user_id = emp.user_id
+join i2b2.bip_provider_link                 bip on prv.provider_id = bip.clarity_prov_id
 ;

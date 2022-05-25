@@ -10,18 +10,21 @@ WHERE order_type_c = 59
 
 drop table xdr_<<PROJECT_ID>>_path_ipacc purge;
 create table xdr_<<PROJECT_ID>>_path_ipacc as
-select acc_num
-    ,i2b2.f_get_deid_new(6, acc_num, <<PROJECT_ID>>)    ip_accession_number
+select path.acc_num
+    ,'IP_' || (acc_num_deid + (101101101 * <<PROJECT_ID>>))    ip_accession_number
 from (
     select distinct acc_num 
     from xdr_<<PROJECT_ID>>_path
-)
+) path
+join i2b2.bip_accnum_path_link l on path.acc_num = l.acc_num
 ;
 
 -- PATH_RES
 drop table xdr_<<PROJECT_ID>>_path_res purge;
 create table xdr_<<PROJECT_ID>>_path_res as
-SELECT opr.order_proc_id
+SELECT opr.pat_id
+    ,opr.ip_patient_id
+    ,opr.order_proc_id
     ,pathmain.ip_order_proc_id
     ,opr.component_id
     ,opr.component_name
@@ -36,7 +39,9 @@ LEFT JOIN clarity.order_res_comp_cmt    rcc         ON opr.order_proc_id = rcc.o
 WHERE trim(rcc.results_comp_cmt) is not null
     and rcc.results_comp_cmt != 'This result contains rich text formatting which cannot be displayed here.'
 UNION
-SELECT opr.order_proc_id
+SELECT opr.pat_id
+    ,opr.ip_patient_id
+    ,opr.order_proc_id
     ,pathmain.ip_order_proc_id
     ,opr.component_id
     ,opr.component_name
@@ -51,7 +56,9 @@ LEFT JOIN clarity.order_res_comment rcc         ON opr.order_proc_id = rcc.order
 WHERE rcc.results_cmt is not null 
     and rcc.results_cmt != 'This result contains rich text formatting which cannot be displayed here.'
 UNION
-select opr.order_proc_id
+select opr.pat_id
+    ,opr.ip_patient_id
+    ,opr.order_proc_id
     ,pathmain.ip_order_proc_id
     ,opr.component_id
     ,opr.component_name
@@ -67,20 +74,3 @@ LEFT JOIN RES_COMPONENTS            OVRrc       ON OVS.RESULT_TO_PRINT_ID = OVRr
 LEFT JOIN RES_VAL_PTR_RM            OVRTxtPtr   ON OVRrc.RESULT_ID = OVRTxtPtr.RESULT_ID AND OVRrc.LINE = OVRTxtPtr.GROUP_LINE
 LEFT JOIN RES_VAL_DATA_RM           OVRTxt      ON OVRTxtPtr.RESULT_ID = OVRTxt.RESULT_ID AND OVRTxtPtr.CMP_MULTILINE_VALUE = OVRTxt.GROUP_LINE
 ;   
-
--- PATH_RES_CMB
-drop table xdr_<<PROJECT_ID>>_path_res_cmb purge;
-create table xdr_<<PROJECT_ID>>_path_res_cmb as
-select pathmain.order_proc_id
-    ,pathmain.ip_order_proc_id
-    ,pathmain.component_id
-    ,pathmain.component_name
-    ,to_char(RTRIM(XMLAGG(XMLELEMENT(E,pathres.result_txt, '').EXTRACT('//text()') 
-        ORDER BY pathmain.ip_order_proc_id, pathres.component_id, pathres.line, sorter, result_sort).GetClobVal(),','))     
-        AS result_txt
-from xdr_<<PROJECT_ID>>_path        pathmain
-join xdr_<<PROJECT_ID>>_path_res    pathres     on pathmain.order_proc_id = pathres.order_proc_id
-where pathres.result_txt is not null 
-group by pathmain.order_proc_id
-    ,pathmain.ip_order_proc_id
-;

@@ -15,8 +15,8 @@
             "RELIGION",
             "ADI_NATRANK",
             "ADI_STATERNK",
-            "EDUCATION_CD",
-            "INCOME_CD",
+            "EDUCATION",
+            "INCOME",
             "SVI_SOCIO_ECON",
             "SVI_HCOMP_LANG",
             "SVI_MINO_LANG",
@@ -43,6 +43,17 @@
         ]
     },
     {
+        "NAME": "Insurance",
+        "TABLES": ["ins"],
+        "ELEMENTS": [
+            "mem_eff_from_date",
+            "mem_eff_to_date",
+            "fin_class_name",
+            "payor_name",
+            "filing_order"
+        ]
+    },
+    {
         "NAME": "Encounters",
         "TABLES": ["enc"],
         "ELEMENTS": [
@@ -52,9 +63,9 @@
             "ENCOUNTER_AGE",
             "ADMIT_DATE",
             "DISCHARGE_DATE",
-            "HOSPITAL_DISCHARGE_DISPOSITION",
+            "HOSP_DISCHARGE_DISPOSITION",
             "ED_DISPOSITION",
-            "IP_VISIT_PROVIDER_ID",
+            "IP_ENCOUNTER_PROV_ID",
             "EPIC_DEPARTMENT_ID",
             "EPIC_DEPARTMENT_NAME",
             "DEPARTMENT_SPECIALTY",
@@ -76,8 +87,9 @@
         "NAME": "Hospital_Unit_Transfers",
         "TABLES": ["adt"],
         "ELEMENTS": [
-            "ADT_EVENT_TYPE",
-            "ADT_EVENT_DATE",
+            "EVENT_TYPE",
+            "EVENT_DATETIME_IN",
+            "EVENT_DATETIME_OUT",
             "EPIC_DEPARTMENT_ID",
             "EPIC_DEPARTMENT_NAME",
             "DEPARTMENT_SPECIALTY",
@@ -130,14 +142,14 @@
         "TABLES": ["appt"],
         "ELEMENTS": [
             "APPOINTMENT_DATE_TIME",
-            "APPOINTMENT_MADE_DATE_TIME",
+            "APPOINTMENT_MADE_DATETIME",
             "DEPARTMENT_ID",
             "DEPARTMENT_NAME",
-            "DEPARTMENT_SPECIALTY_NAME",
+            "DEPARTMENT_SPECIALTY",
             "CENTER_NAME",
-            "LOCATION_NAME",
-            "PROV_NAME_W_ID",
-            "REFERRING_PROV_NAME_W_ID",
+            "LOCATION",
+            "PROV_NAME_WID",
+            "REFERRING_PROV_NAME_WID",
             "PROCEDURE_NAME",
             "APPOINTMENT_CONFIRMATION_STATUS",
             "APPOINTMENT_STATUS"
@@ -189,6 +201,7 @@
         "NAME": "Social_History",
         "TABLES": ["soc"],
         "ELEMENTS": [
+            "CONTACT_DATE",
             "SEXUALLY_ACTIVE",
             "FEMALE_PARTNER",
             "MALE_PARTNER",
@@ -196,7 +209,7 @@
             "TOBACCO_PACK_PER_DAY",
             "TOBACCO_USED_YEARS",
             "TOBACCO_USER",
-            "TOBACCO_TYPE",
+            "TOBACCO_FORM",
             "SMOKING_START_DATE",
             "SMOKING_QUIT_DATE",
             "ALCOHOL_USER",
@@ -209,11 +222,51 @@
         ]
     },
     {
+        "NAME": "Social_Determinants_of_Health",
+        "TABLES": ["socdet"],
+        "ELEMENTS": [
+            "education_level",
+            "financial_res_strain",
+            "ipv_emotional_abuse",
+            "ipv_fear",
+            "ipv_sexual_abuse",
+            "ipv_physical",
+            "alcohol_freq",
+            "alcohol_drinks_p_day",
+            "alcohol_binge",
+            "living_w_spouse",
+            "daily_stress",
+            "phone_communication",
+            "sdh_socialize_freq",
+            "church_attendance",
+            "club_mtg_attend",
+            "club_member",
+            "phys_act_days_p_wk",
+            "phys_act_min_p_sess",
+            "food_insec_scarce",
+            "food_insec_worry",
+            "med_trans_needs",
+            "other_trans_needs"
+        ]
+    },
+    {
         "NAME": "Family_History",
         "TABLES": ["fam"],
         "ELEMENTS": [
             "MEDICAL_HISTORY",
             "RELATION"
+        ]
+    },
+    {
+        "NAME": "Allergies",
+        "TABLES": ["alg"],
+        "ELEMENTS": [
+            "Allergen",
+            "Description",
+            "Reaction",
+            "Date_Noted",
+            "Allergy_Status",
+            "Severity"
         ]
     },
     {
@@ -223,7 +276,7 @@
             "NOTE_TYPE",
             "CREATE_DATE",
             "CREATE_BY",
-            "LINE",
+            "LINE_NUMBER",
             "NOTE_TEXT",
             "CONTACT_DATE"
         ]

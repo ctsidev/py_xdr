@@ -3,6 +3,7 @@ DROP TABLE xdr_<<PROJECT_ID>>_soc PURGE;
 CREATE TABLE xdr_<<PROJECT_ID>>_soc AS
 SELECT DISTINCT coh.ip_patient_id
     ,coh.pat_id
+    ,s.contact_date
     ,xsa.NAME                           sexually_active
     ,s.female_partner_yn                female_partner
     ,s.male_partner_yn                  male_partner
@@ -58,6 +59,7 @@ LEFT JOIN zc_hx_drink_types     xdt         ON soa.hx_drink_types_c = xdt.hx_dri
 left join zc_alcohol_use        xdrug       on s.ill_drug_user_c = xdrug.alcohol_use_c
 GROUP BY coh.ip_patient_id
     ,coh.pat_id
+    ,s.contact_date
     ,xsa.NAME 
     ,s.female_partner_yn 
     ,s.male_partner_yn 

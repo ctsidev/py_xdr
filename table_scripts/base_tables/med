@@ -45,7 +45,7 @@ AND med.used_med_id IS NOT NULL
 drop table xdr_<<PROJECT_ID>>_med_ipid purge;
 create table xdr_<<PROJECT_ID>>_med_ipid as
 select order_med_id
-    ,i2b2.f_get_deid_new(4, order_med_id, <<PROJECT_ID>>)  ip_order_med_id
+    ,'IP_' || (order_med_id + (101101101 * <<PROJECT_ID>>))  ip_order_med_id
 from (
     select distinct order_med_id 
     from xdr_<<PROJECT_ID>>_med

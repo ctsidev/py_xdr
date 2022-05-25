@@ -1,0 +1,13 @@
+-- INS
+DROP TABLE xdr_<<PROJECT_ID>>_ins PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_ins AS
+select distinct pat.pat_id
+    ,pat.ip_patient_id
+    ,mem_eff_from_date
+    ,mem_eff_to_date
+    ,fin_class_name
+    ,payor_name
+    ,filing_order
+from i2b2.lz_clarity_coverage_pat cov
+join xdr_<<PROJECT_ID>>_pat pat on cov.pat_id = pat.pat_id
+;

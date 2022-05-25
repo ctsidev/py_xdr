@@ -1,0 +1,53 @@
+-- SOCDET
+DROP TABLE xdr_<<PROJECT_ID>>_socdet PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_socdet AS
+SELECT DISTINCT coh.ip_patient_id
+    ,coh.pat_id
+    ,xedu.name as education_level
+    ,zfrs.name as financial_res_strain
+    ,ziea.name as ipv_emotional_abuse
+    ,zfear.name as ipv_fear
+    ,zisa.name as ipv_sexual_abuse
+    ,zipa.name as ipv_physical
+    ,zaf.name as alcohol_freq
+    ,zadpd.name as alcohol_drinks_p_day
+    ,zbinge.name as alcohol_binge
+    ,zspouse.name as living_w_spouse
+    ,zstress.name as daily_stress
+    ,zphone.name as phone_communication
+    ,zsocial.name as socialize_freq
+    ,zchurch.name as church_attendance
+    ,zclub.name as club_mtg_attend
+    ,zclubm.name as club_member
+    ,zpdpw.name as phys_act_days_p_wk
+    ,zpamps.name as phys_act_min_p_sess
+    ,zfoods.name as food_insec_scarce
+    ,zfoodw.name as food_insec_worry
+    ,zmedtr.name as med_trans_needs
+    ,zothertr.name as other_trans_needs
+FROM xdr_<<PROJECT_ID>>_pat     coh 
+LEFT JOIN social_hx             soc           ON coh.pat_id = soc.pat_id
+left join zc_edu_level        xedu on soc.edu_level_c = xedu.edu_level_c
+left join zc_fin_resource_strain  zfrs on soc.fin_resource_strain_c = zfrs.fin_resource_strain_c
+left join zc_ipv_emotional_abuse	ziea on soc.ipv_emotional_abuse_c = ziea.ipv_emotional_abuse_c
+left join zc_ipv_fear	            zfear on soc.ipv_fear_c = zfear.ipv_fear_c
+left join zc_ipv_sexual_abuse	    zisa on soc.ipv_sexual_abuse_c = zisa.ipv_sexual_abuse_c
+left join zc_ipv_physical_abuse	  zipa on soc.ipv_physical_abuse_c = zipa.ipv_physical_abuse_c
+left join ZC_ALCOHOL_FREQ	  	    zaf on soc.ALCOHOL_FREQ_C = zaf.ALCOHOL_FREQ_C
+left join zc_alcohol_drinks_per_day	  zadpd on soc.alcohol_drinks_per_day_c = zadpd.alcohol_drinks_per_day_c
+left join zc_alcohol_binge	      zbinge on soc.alcohol_binge_c = zbinge.alcohol_binge_c
+left join zc_living_w_spouse	    zspouse on soc.living_w_spouse_c = zspouse.living_w_spouse_c
+left join zc_daily_stress	        zstress on soc.daily_stress_c = zstress.daily_stress_c
+left join zc_phone_communication  zphone on soc.phone_communication_c = zphone.phone_communication_c
+left join zc_socialization_freq   zsocial on soc.socialization_freq_c = zsocial.socialization_freq_c
+left join zc_church_attendance    zchurch on soc.church_attendance_c = zchurch.sdoh_church_attendance_c
+left join zc_clubmtg_attendance    zclub on soc.clubmtg_attendance_c = zclub.clubmtg_attendance_c
+left join zc_club_member           zclubm on soc.club_member_c = zclubm.club_member_c
+left join zc_phys_act_days_per_week zpdpw on soc.phys_act_days_per_week_c = zpdpw.phys_act_days_per_week_c
+left join zc_phys_act_min_per_sess  zpamps on soc.phys_act_min_per_sess_c = zpamps.phys_act_min_per_sess_c
+left join zc_food_insecurity_scarce zfoods on soc.food_insecurity_scarce_c = zfoods.food_insecurity_scarce_c
+left join zc_food_insecurity_worry  zfoodw on soc.food_insecurity_worry_c = zfoodw.food_insecurity_worry_c
+left join zc_med_transport_needs    zmedtr on soc.med_transport_needs_c = zmedtr.med_transport_needs_c
+left join zc_other_transport_needs  zothertr on soc.other_transport_needs_c = zothertr.other_transport_needs_c
+WHERE soc.pat_enc_date_real = (SELECT MAX(soc.pat_enc_date_real) FROM social_hx soc WHERE soc.pat_id = coh.pat_id)
+;

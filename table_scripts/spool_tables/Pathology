@@ -23,10 +23,9 @@ select distinct ip_patient_id
     ,ip_order_proc_id
     ,component_id
     ,component_name
-    --,line
+    ,line
     ,result_txt
-from xdr_<<PROJECT_ID>>_path_res_cmb
--- from xdr_<<PROJECT_ID>>_path_res
+from xdr_<<PROJECT_ID>>_path_res
 order by ip_patient_id
     ,ip_order_proc_id
 ;

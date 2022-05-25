@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Generate XDR</title>
+</head>
+<body>
+    <br />
+    <div class="container" style="padding-bottom:10rem;padding-top:2rem">
+        <form id="main">
+            <h1>Generate XDR</h1>
+            <br />
+            <div class="row">
+                <div class="col-3">
+                    <input type="text" class="form-control" id="projectId" placeholder="Project ID" required>
+                </div>
+                <div class="col-3">
+                    <select class="form-select" id="basis">
+                        <option selected>Patient_Based</option>
+                        <option>Encounter_Based</option>
+                      </select>
+                </div>
+            </div>
+            <br />
+            <div class="accordion" id="tables"></div>
+            <br />
+            <button class="btn btn-success" type="submit">Generate</button>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <!-- <script type="module" src="script_MODULE_BASED.js"></script> -->
+    <script>
+        const api_port = 5001
+
+        // FUNCTIONS
+        async function sendJson(json, api_port) {
+            const res = await fetch(`http://localhost:${api_port}/api/generate`, {
+                method: 'POST',
+                headers: {"Content-type": "application/json; charset=UTF-8"},
+                body: JSON.stringify(json)
+            })
+            const data = await res.json()
+            return data
+        }
+
+        function download(filename, textInput) {
+            let element = document.createElement('a');
+            element.setAttribute('href','data:text/plain;charset=utf-8, ' + encodeURIComponent(textInput));
+            element.setAttribute('download', filename);
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        // MAIN
+
+        fetch(`http://localhost:${api_port}/api/tables`).then(res => res.json()).then(tables => {
+            let html = ""
+            let show = true
+            tables.forEach(table => {
+                html += '<div class="accordion-item">'
+                html += `<h2 class="accordion-header" id="heading${table.NAME}">`
+                html += `<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${table.NAME}" aria-expanded="true" aria-controls="collapse${table.NAME}">
+                            ${table.NAME}
+                        </button>`
+                html += '</h2>'
+                html += `<div id="collapse${table.NAME}" class="accordion-collapse collapse ${(show) ? 'show' : ''}" aria-labelledby="heading${table.NAME}" data-bs-parent="#accordionExample">`
+                html += '<div class="accordion-body">'
+
+                table.ELEMENTS.forEach(element => {
+                    html += `<div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="${table.NAME};${element}">
+                    <label class="form-check-label">
+                    ${element}
+                    </label>
+                    </div>`
+                })
+
+                html += '</div></div></div>'
+                show = false
+            })
+
+            document.getElementById('tables').innerHTML = html
+        })
+
+        const form = document.getElementById('main')
+        form.addEventListener('submit', e => {
+            e.preventDefault()
+            let ckBoxes = document.getElementsByClassName('form-check-input')
+            let projectId = document.getElementById('projectId').value
+            let basis = document.getElementById('basis').value
+            let tableJson = {}
+            let table
+            let element
+            for (let ck of ckBoxes) {
+                if (ck.checked) {
+                    table = ck.value.split(';')[0]
+                    element = ck.value.split(';')[1]
+
+                    if (tableJson[table] == undefined) {
+                        tableJson[table] = [element]
+                    } else {
+                        tableJson[table].push(element)
+                    }
+                }
+            }
+
+            let json = {
+                PROJECT_ID: projectId,
+                BASIS: basis,
+                TABLES: tableJson
+            }
+
+            sendJson(json, api_port).then(data => {
+                for (const [key, value] of Object.entries(data)) {
+                    download(key, value);
+                }
+            })
+        })
+    </script>
+</body>
+</html>

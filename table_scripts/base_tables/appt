@@ -8,12 +8,12 @@ SELECT DISTINCT coh.pat_id
     ,vsa.appt_status_c
     ,vsa.appt_status_name               APPOINTMENT_STATUS
     ,vsa.appt_conf_stat_c
-    ,vsa.appt_conf_stat_name            APPOINTMENT_CONFIRMATION_STATUS
+    ,vsa.appt_conf_stat_name            APPOINTMENT_CONFIRM_STATUS
     ,vsa.appt_block_c
     ,vsa.appt_block_name                appt_block
-    ,vsa.appt_dttm                      APPOINTMENT_DATE_TIME
+    ,vsa.appt_dttm                      APPOINTMENT_DATETIME
     ,vsa.appt_length
-    ,vsa.appt_made_dttm                 APPOINTMENT_MADE_DATE_TIME
+    ,vsa.appt_made_dttm                 APPOINTMENT_MADE_DATETIME
     ,vsa.prc_id  --  This is the visit type !!!
     ,clprc.record_type                  prc_v_type
     ,clprc.status                       prc_v_type_status
@@ -26,9 +26,9 @@ SELECT DISTINCT coh.pat_id
     ,vsa.department_id
     ,vsa.department_name
     ,vsa.dept_specialty_c   
-    ,vsa.dept_specialty_name            DEPARTMENT_SPECIALTY_NAME
+    ,vsa.dept_specialty_name            DEPARTMENT_SPECIALTY
     ,vsa.loc_id            
-    ,vsa.loc_name                       LOCATION_NAME
+    ,vsa.loc_name                       LOCATION
     ,vsa.center_c      
     ,vsa.center_name
     ,vsa.prov_id

@@ -1,0 +1,25 @@
+-- ALG
+DROP TABLE xdr_<<PROJECT_ID>>_alg PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_alg AS
+SELECT DISTINCT pat.pat_id 
+    ,pat.ip_patient_id
+    ,alg.allergy_id
+    ,alg.allergen_id            allergen
+    ,alg.description
+    ,alg.reaction
+    ,alg.date_noted
+    ,xsv.name                  severity
+    ,xas.name                  allergy_severity
+    ,xst.name                  allergy_status
+    ,xdr.name                  delete_reason
+    ,alg.alrgy_dlt_cmt
+    ,alg.alrgy_entered_dttm
+FROM xdr_<<PROJECT_ID>>_pat   pat
+JOIN allergy                  alg ON pat.pat_id = alg.pat_id
+LEFT JOIN zc_severity         xsv ON alg.severity_c = xsv.severity_c
+LEFT JOIN zc_allergy_severit  xas ON alg.allergy_severity_c = xas.allergy_severity_c
+LEFT JOIN zc_alrgy_status     xst ON alg.alrgy_status_c = xst.alrgy_status_c
+LEFT JOIN zc_alrgy_dlet_rsn   xdr ON alg.alrgy_dlet_rsn_c = xdr.alrgy_dlet_rsn_c
+WHERE
+    xst.name = 'Active'
+;

@@ -5,17 +5,17 @@ class XDR_Gen:
         self.project_id = project_id
         self.basis = basis
         self.csn_tables = {
-            'adt': 'time_in',
-            'appt': 'appt_dttm',
+            'adt': 'event_datetime_in',
+            'appt': 'appointment_datetime',
             'enc': 'encounter_date',
             'encdx': 'diagnosis_date',
-            'flow': 'recorded_time',
+            'flow': 'vital_sign_taken_time',
             'opr': 'order_time',
             'lab': 'order_time',
-            'med': 'ordering_date',
-            'note': 'create_instant_dttm',
+            'med': 'order_date',
+            'note': 'create_datetime',
             'pl': 'noted_date',
-            'proc': 'proc_date'
+            'proc': 'procedure_date'
         }
 
     def generate(self, sel_tables):
@@ -74,15 +74,16 @@ class XDR_Gen:
 drop table xdr_{self.project_id}_ipenc purge;
 create table xdr_{self.project_id}_ipenc as
 select pat_enc_csn_id
-    ,i2b2.f_get_deid_new(2, pat_enc_csn_id, {self.project_id}) ip_enc_id
+    ,'IP_' || (bip.encounter_num + (101101101 * {self.project_id})) ip_enc_id
 from (
 {ipenc_lookup[:-7]}
-)
+) e
+join i2b2.bip_encounter_link bip on e.pat_enc_csn_id = bip.encounter_ide
 ;
 """
         date_range = f"""
 -- DATE RANGE
-select min(mindate), max(maxdate)
+select to_char(min(mindate), 'mm/dd/yyyy') mindate, to_char(max(maxdate), 'mm/dd/yyyy') maxdate
 from (
 {date_range[:-7]}
 )

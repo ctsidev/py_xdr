@@ -4,7 +4,7 @@ CREATE TABLE xdr_<<PROJECT_ID>>_pat AS
 SELECT DISTINCT pat.pat_id
     ,pat.pat_mrn_id
     ,pat.pat_mrn_id                                                 MRN
-    ,i2b2.f_get_deid_new(1, pat.pat_id, <<PROJECT_ID>>)             ip_patient_id
+    ,'IP_' || (bip.patient_num + (101101101 * <<PROJECT_ID>>))      ip_patient_id
     ,pat.birth_date                                                 DOB
     ,pat.ethnic_group                                               ETHNICITY
     ,pat.mapped_race_name                                           RACE
@@ -12,14 +12,25 @@ SELECT DISTINCT pat.pat_id
     ,pat.language                                                   LANGUAGE
     ,pat.marital_status                                             MARITAL_STATUS
     ,pat.religion                                                   RELIGION
+    ,pat.sexual_orient                                              SEXUAL_ORIENTATION
     ,pat.cur_pcp_prov_id
-    ,to_number(i2b2.f_death(pat.pat_id, 3, 1))                      AGE
-    ,i2b2.f_death(pat.pat_id, 2, 1)                                 VITAL_STATUS
-    ,i2b2.f_death(pat.pat_id, 1, 1)                                 death_date
+    ,case
+        when x2.death_date_derived = to_date('01/01/0001','mm/dd/yyyy') then null
+        when x2.death_date_derived <> to_date('01/01/0001','mm/dd/yyyy') then trunc(months_between(x2.death_date_derived, pat.birth_date)/12)
+        else trunc(months_between(sysdate, pat.birth_date)/12)
+        end Age
+    ,case
+        when x2.death_date_derived is not null then 'Known Deceased'
+        else 'Not Known Deceased'
+        end Vital_Status
+    ,case
+        when x2.death_date_derived is not null then x2.death_date_derived
+        else null
+        end Death_Date
     ,geo.ADI_NATRANK
     ,geo.ADI_STATERNK
-    ,geo.education_cd
-    ,geo.income_cd
+    ,geo.education_cd                                               EDUCATION
+    ,geo.income_cd                                                  INCOME
     ,geo.Svi_Socio_Econ
     ,geo.SVI_HCOMP_LANG
     ,geo.Svi_Mino_Lang
@@ -27,5 +38,34 @@ SELECT DISTINCT pat.pat_id
     ,geo.Svi_Total
 FROM i2b2.lz_clarity_patient        pat
 JOIN xdr_<<PROJECT_ID>>_coh         coh ON pat.pat_id = coh.pat_id
-LEFT JOIN JSANZ.BIP_PAT_GEOCODE    geo ON pat.pat_id = geo.pat_id
+join i2b2.bip_patient_link          bip on bip.patient_ide = coh.pat_id
+LEFT JOIN JSANZ.BIP_PAT_GEOCODE     geo ON pat.pat_id = geo.pat_id
+join (select x1.*
+        ,case
+            when (dead_pat = 1 or dead_enc = 1 or dead_death = 1) and death_date_min = to_date('12/31/9999','mm/dd/yyyy') then to_date('01/01/0001','mm/dd/yyyy')
+            when (dead_pat = 1 or dead_enc = 1 or dead_death = 1) and death_date_min <> to_date('12/31/9999','mm/dd/yyyy') then death_date_min
+            else null
+        end death_date_derived
+        from (select distinct x.*  
+                ,least(nvl(death_date_pat,to_date('12/31/9999','mm/dd/yyyy'))
+                ,nvl(death_date_enc,to_date('12/31/9999','mm/dd/yyyy'))
+                ,nvl(death_date_death,to_date('12/31/9999','mm/dd/yyyy'))
+                ) death_date_min
+                from (select coh.*
+                        ,pat.pat_status_c
+                        ,ps.name as patient_status
+                        ,case when pat.pat_status_c = 2 or pat.death_date is not null then 1 else 0 end dead_pat
+                        ,case when enc.pat_id is not null then 1 else 0 end dead_enc
+                        ,case when death.pat_id is not null then 1 else 0 end dead_death
+                        ,case when nvl(pat.death_date,to_date('01/01/0001','mm/dd/yyyy')) >= pat.birth_date then pat.death_date else null end death_date_pat
+                        ,max(enc.hosp_disch_time) over (partition by enc.pat_id) death_date_enc
+                        ,case when nvl(death.death_date,to_date('01/01/0001','mm/dd/yyyy')) >= pat.birth_date then death.death_date else null end death_date_death
+                        from xdr_<<PROJECT_ID>>_coh coh
+                        join clarity.patient pat on coh.pat_id = pat.pat_id
+                        left join clarity.pat_enc_hsp enc on pat.pat_id = enc.pat_id and (enc.disch_disp_c in ('20', '40', '41', '42', '71') or enc.ed_disposition_c = '8')
+                        left join i2b2.lz_death death on pat.pat_id = death.pat_id
+                        left join clarity.zc_patient_status ps on pat.pat_status_c = ps.patient_status_c
+                    ) x
+            ) x1
+        ) x2 on coh.pat_id = x2.pat_id
 ;

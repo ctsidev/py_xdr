@@ -1,0 +1,9 @@
+spool Data/Insurance.csv
+select distinct ip_patient_id
+<<COLS>>
+from xdr_<<PROJECT_ID>>_ins
+order by ip_patient_id
+    ,filing_order
+;
+spool off
+

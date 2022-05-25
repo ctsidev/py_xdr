@@ -55,7 +55,7 @@ WHERE opr.order_status_c = 5
 drop table xdr_<<PROJECT_ID>>_opr_ipid purge;
 create table xdr_<<PROJECT_ID>>_opr_ipid as
 select order_proc_id
-    ,i2b2.f_get_deid_new(4, order_proc_id, <<PROJECT_ID>>)  ip_order_proc_id
+    ,'IP_' || (order_proc_id + (101101101 * <<PROJECT_ID>>))  ip_order_proc_id
 from (
     select distinct order_proc_id 
     from xdr_<<PROJECT_ID>>_opr
