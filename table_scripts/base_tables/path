@@ -29,7 +29,7 @@ SELECT opr.pat_id
     ,opr.component_id
     ,opr.component_name
     --,opr.result
-    ,opr.line 
+    ,opr.line line_number
     ,1                      sorter
     ,rcc.line_comment       result_sort
     ,rcc.results_comp_cmt   result_txt
@@ -46,7 +46,7 @@ SELECT opr.pat_id
     ,opr.component_id
     ,opr.component_name
     --,opr.result
-    ,opr.line
+    ,opr.line line_number
     ,2                      sorter
     ,rcc.line_comment       result_sort
     ,rcc.results_cmt        result_text
@@ -63,7 +63,7 @@ select opr.pat_id
     ,opr.component_id
     ,opr.component_name
     --,OVRrc.COMPONENT_ID
-    ,OVRTxt.GROUP_LINE              line
+    ,OVRTxt.GROUP_LINE              line_number
     ,3                              sorter
     ,OVRTxt.VALUE_LINE              result_sort
     ,OVRTxt.MULT_LN_VAL_STORAGE     result_text

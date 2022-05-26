@@ -17,7 +17,7 @@ SELECT DISTINCT t.pat_id
     ,xmrs.NAME                                  result
     ,nvl(mar.taken_time, med.ordering_date)     taken_time_order_date
     ,nvl(mar.sig, med.hv_discrete_dose)         dose
-    ,mar.taken_time                             TAKEN_DATE_TIME
+    ,mar.taken_time                             TAKEN_TIME
     ,coalesce(mar.sig,med.sig)                  sig
     ,med.dose_unit
     ,med.order_class

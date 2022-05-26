@@ -193,7 +193,7 @@
             "QUANTITY",
             "REFILLS",
             "SIG",
-            "TAKEN_DATE_TIME",
+            "TAKEN_TIME",
             "FREQUENCY"
         ]
     },

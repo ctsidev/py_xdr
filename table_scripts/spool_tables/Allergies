@@ -5,3 +5,4 @@ from xdr_<<PROJECT_ID>>_alg
 order by ip_patient_id
 ;
 spool off
+

@@ -21,7 +21,7 @@ ORDER BY ip_patient_id, ip_order_proc_id
 ;
 spool off
 
-spool Data/Microbiology_Susceptibility_Sensitivity.csv
+spool Data/Microbiology_Sensitivity_Susceptibility.csv
 SELECT DISTINCT mic.ip_patient_id
     ,ip_order_proc_id       
     ,mic.organism_name      
@@ -29,6 +29,8 @@ SELECT DISTINCT mic.ip_patient_id
     ,mic.sensitivity
     ,mic.antibiotic
 FROM xdr_<<PROJECT_ID>>_mic_org 	      mic
-ORDER BY ip_patient_id, ip_order_proc_id
+ORDER BY ip_patient_id
+    ,ip_order_proc_id
 ;
 spool off
+
