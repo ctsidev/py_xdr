@@ -11,7 +11,7 @@ WHERE radiology_status_c = 99
 drop table xdr_<<PROJECT_ID>>_img_ipacc purge;
 create table xdr_<<PROJECT_ID>>_img_ipacc as
 select img.acc_num
-    ,'IP_' || (acc_num_deid + (101101101 * <<PROJECT_ID>>)) ip_accession_number
+    ,'IPACC_' || (acc_num_deid + (101101101 * <<PROJECT_ID>>)) ip_accession_number
 from (select distinct acc_num from xdr_<<PROJECT_ID>>_img) img
 join i2b2.bip_accnum_img_link l on img.acc_num = l.acc_num
 ;

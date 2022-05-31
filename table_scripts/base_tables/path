@@ -11,7 +11,7 @@ WHERE order_type_c = 59
 drop table xdr_<<PROJECT_ID>>_path_ipacc purge;
 create table xdr_<<PROJECT_ID>>_path_ipacc as
 select path.acc_num
-    ,'IP_' || (acc_num_deid + (101101101 * <<PROJECT_ID>>))    ip_accession_number
+    ,'IPACC_' || (acc_num_deid + (101101101 * <<PROJECT_ID>>))    ip_accession_number
 from (
     select distinct acc_num 
     from xdr_<<PROJECT_ID>>_path

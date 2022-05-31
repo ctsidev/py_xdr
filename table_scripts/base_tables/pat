@@ -4,7 +4,7 @@ CREATE TABLE xdr_<<PROJECT_ID>>_pat AS
 SELECT DISTINCT pat.pat_id
     ,pat.pat_mrn_id
     ,pat.pat_mrn_id                                                 MRN
-    ,'IP_' || (bip.patient_num + (101101101 * <<PROJECT_ID>>))      ip_patient_id
+    ,'IPPAT_' || (bip.patient_num + (101101101 * <<PROJECT_ID>>))      ip_patient_id
     ,pat.birth_date                                                 DOB
     ,pat.ethnic_group                                               ETHNICITY
     ,pat.mapped_race_name                                           RACE

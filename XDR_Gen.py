@@ -74,7 +74,7 @@ class XDR_Gen:
 drop table xdr_{self.project_id}_ipenc purge;
 create table xdr_{self.project_id}_ipenc as
 select pat_enc_csn_id
-    ,'IP_' || (bip.encounter_num + (101101101 * {self.project_id})) ip_enc_id
+    ,'IPENC_' || (bip.encounter_num + (101101101 * {self.project_id})) ip_enc_id
 from (
 {ipenc_lookup[:-7]}
 ) e
