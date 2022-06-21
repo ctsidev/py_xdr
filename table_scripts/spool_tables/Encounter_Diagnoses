@@ -1,4 +1,4 @@
-spool Data/Encounter_Diagnoses.csv
+-- Encounter_Diagnoses.csv
 select distinct ip_patient_id
     ,ip_enc_id
 <<COLS>>
@@ -7,5 +7,4 @@ join xdr_<<PROJECT_ID>>_ipenc    ipenc   on encdx.pat_enc_csn_id = ipenc.pat_enc
 order by ip_patient_id
     ,ip_enc_id
 ;
-spool off
 

@@ -1,8 +1,7 @@
-spool Data/Social_History.csv
+-- Social_History.csv
 select distinct ip_patient_id
 <<COLS>>
 from xdr_<<PROJECT_ID>>_soc
 order by ip_patient_id
 ;
-spool off
 

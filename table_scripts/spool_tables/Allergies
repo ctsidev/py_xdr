@@ -1,8 +1,7 @@
-spool Data/Allergies.csv
+-- Allergies.csv
 select distinct ip_patient_id
 <<COLS>>
 from xdr_<<PROJECT_ID>>_alg     
 order by ip_patient_id
 ;
-spool off
 

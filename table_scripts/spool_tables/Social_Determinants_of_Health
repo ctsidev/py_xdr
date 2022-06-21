@@ -1,7 +1,6 @@
-spool Data/Social_Determinants_of_Health.csv
+-- Social_Determinants_of_Health.csv
 select distinct ip_patient_id
 <<COLS>>
 from xdr_<<PROJECT_ID>>_socdet
 order by ip_patient_id
 ;
-spool off

@@ -1,4 +1,4 @@
-spool Data/Pathology.csv
+-- Pathology.csv
 select distinct ip_patient_id
     ,ip_enc_id
     ,ip_order_proc_id
@@ -16,9 +16,8 @@ order by ip_patient_id
     ,ip_enc_id
     ,ip_order_proc_id
 ;
-spool off
 
-spool Data/Pathology_Results.csv
+-- Pathology_Results.csv
 select distinct ip_patient_id
     ,ip_order_proc_id
     ,component_id
@@ -30,5 +29,4 @@ where result_txt is not null
 order by ip_patient_id
     ,ip_order_proc_id
 ;
-spool off
 

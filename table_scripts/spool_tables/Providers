@@ -1,8 +1,7 @@
-spool Data/Providers.csv
+-- Providers.csv
 select distinct ip_provider_id
 <<COLS>>
 from xdr_<<PROJECT_ID>>_prv        t
 order by ip_provider_id
 ;
-spool off
 

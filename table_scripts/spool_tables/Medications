@@ -1,4 +1,4 @@
-spool Data/Medications.csv
+-- Medications.csv
 select distinct ip_patient_id
     ,ip_enc_id
     ,ip_order_med_id
@@ -10,5 +10,4 @@ order by ip_patient_id
     ,ip_enc_id
     ,ip_order_med_id
 ;
-spool off
 

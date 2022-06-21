@@ -1,4 +1,4 @@
-spool Data/Microbiology.csv
+-- Microbiology.csv
 select distinct prc.ip_patient_id
                 ,ip_order_proc_id
                 ,to_char(order_time, 'mm/dd/yyyy hh24:mi') order_time
@@ -19,9 +19,8 @@ LEFT JOIN clarity.zc_specimen_source  xps ON prc.specimen_source_c = xps.specime
 LEFT JOIN clarity.clarity_organism	org ON prc.lrr_based_organ_id = org.organism_id
 ORDER BY ip_patient_id, ip_order_proc_id
 ;
-spool off
 
-spool Data/Microbiology_Sensitivity_Susceptibility.csv
+-- Microbiology_Sensitivity_Susceptibility.csv
 SELECT DISTINCT mic.ip_patient_id
     ,ip_order_proc_id       
     ,mic.organism_name      
@@ -32,5 +31,4 @@ FROM xdr_<<PROJECT_ID>>_mic_org 	      mic
 ORDER BY ip_patient_id
     ,ip_order_proc_id
 ;
-spool off
 

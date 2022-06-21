@@ -1,4 +1,4 @@
-spool Data/Imaging.csv
+-- Imaging.csv
 select distinct ip_patient_id
     ,ip_enc_id
     ,ip_order_proc_id
@@ -14,9 +14,8 @@ order by ip_patient_id
     ,ip_enc_id
     ,ip_order_proc_id
 ;
-spool off
 
-spool Data/Imaging_Narratives.csv
+-- Imaging_Narratives.csv
 select distinct ip_patient_id
     ,ip_order_proc_id
     ,line
@@ -25,9 +24,8 @@ from xdr_<<PROJECT_ID>>_img_nar
 order by ip_patient_id
     ,ip_order_proc_id
 ;
-spool off
 
-spool Data/Imaging_Impressions.csv
+-- Imaging_Impressions.csv
 select distinct ip_patient_id
     ,ip_order_proc_id
     ,line
@@ -36,5 +34,4 @@ from xdr_<<PROJECT_ID>>_img_imp
 order by ip_patient_id
     ,ip_order_proc_id
 ;
-spool off
 

@@ -1,4 +1,4 @@
-spool Data/Labs.csv
+-- Labs.csv
 select distinct ip_patient_id
     ,ip_enc_id
     ,ip_order_proc_id
@@ -10,5 +10,4 @@ order by ip_patient_id
     ,ip_enc_id
     ,ip_order_proc_id
 ;
-spool off
 

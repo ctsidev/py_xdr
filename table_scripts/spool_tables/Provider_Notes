@@ -1,4 +1,4 @@
-spool Data/Provider_Notes.csv
+-- Provider_Notes.csv
 select distinct ip_patient_id
     ,ip_enc_id
     ,ip_note_id
@@ -10,5 +10,4 @@ order by ip_patient_id
     ,ip_enc_id
     ,ip_note_id
 ;
-spool off
 
