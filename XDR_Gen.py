@@ -90,7 +90,17 @@ from (
 ;
 """
 
+        hipaa = f"""
+-- HIPAA.txt
+select distinct p1.mrn
+    ,p2.pat_name
+from xdr_{self.project_id}_pat p1 
+join patient p2 on p1.pat_id = p2.pat_id
+order by p2.pat_name
+;
+"""
+
         return { 
             f"xdr_{self.project_id}.sql": base_script + ipenc_lookup + date_range,
-            f"xdr_{self.project_id}_SPOOL.sql": spool_script + 'exit'
+            f"xdr_{self.project_id}_SPOOL.sql": spool_script + hipaa
         }

@@ -18,9 +18,9 @@
             "EDUCATION",
             "INCOME",
             "SVI_SOCIO_ECON",
-            "SVI_HCOMP_LANG",
+            "SVI_HCOMP",
             "SVI_MINO_LANG",
-            "SVI_HTYP_TRANS",
+            "SVI_HTYPE_TRANS",
             "SVI_TOTAL"
         ]
     },
@@ -30,7 +30,7 @@
         "ELEMENTS": [
             "MRN",
             "DOB",
-            "NAME",
+            "PAT_NAME",
             "ADDRESS",
             "CITY",
             "STATE",
