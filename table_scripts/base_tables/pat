@@ -37,9 +37,13 @@ SELECT DISTINCT pat.pat_id
     ,geo.SVI_HTYPE_TRANS
     ,geo.Svi_Total
     ,p2.pat_name
+    ,p2.add_line_1 address_1
+    ,p2.add_line_2 address_2
     ,p2.city
     ,pat.state
     ,pat.zip zip_code
+    ,home_phone
+    ,email_address email
 FROM i2b2.lz_clarity_patient        pat
 join patient p2 on pat.pat_id = p2.pat_id
 JOIN xdr_<<PROJECT_ID>>_coh         coh ON pat.pat_id = coh.pat_id
