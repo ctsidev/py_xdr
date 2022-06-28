@@ -32,9 +32,9 @@ SELECT DISTINCT pat.pat_id
     ,geo.education_cd                                               EDUCATION
     ,geo.income_cd                                                  INCOME
     ,geo.Svi_Socio_Econ
-    ,geo.SVI_HCOMP
+    ,geo.SVI_HCOMP_LANG SVI_HCOMP
     ,geo.Svi_Mino_Lang
-    ,geo.SVI_HTYPE_TRANS
+    ,geo.SVI_HTYP_TRANS SVI_HTYPE_TRANS
     ,geo.Svi_Total
     ,p2.pat_name
     ,p2.add_line_1 address_1
@@ -42,10 +42,12 @@ SELECT DISTINCT pat.pat_id
     ,p2.city
     ,pat.state
     ,pat.zip zip_code
-    ,home_phone
+    ,pc.home_phone
+    ,pc.cell_phone
     ,email_address email
 FROM i2b2.lz_clarity_patient        pat
 join patient p2 on pat.pat_id = p2.pat_id
+left join i2b2.lz_clarity_pat_contacts pc.pat_id = pat.pat_id
 JOIN xdr_<<PROJECT_ID>>_coh         coh ON pat.pat_id = coh.pat_id
 join i2b2.bip_patient_link          bip on bip.patient_ide = coh.pat_id
 LEFT JOIN JSANZ.BIP_PAT_GEOCODE     geo ON pat.pat_id = geo.pat_id

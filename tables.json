@@ -37,6 +37,7 @@
             "STATE",
             "ZIP_CODE",
             "HOME_PHONE",
+            "CELL_PHONE",
             "EMAIL",
             "DEATH_DATE",
             "FIRST_ENCOUNTER_DATE",
