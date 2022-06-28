@@ -44,10 +44,10 @@ SELECT DISTINCT pat.pat_id
     ,pat.zip zip_code
     ,pc.home_phone
     ,pc.cell_phone
-    ,email_address email
+    ,pc.email_address email
 FROM i2b2.lz_clarity_patient        pat
 join patient p2 on pat.pat_id = p2.pat_id
-left join i2b2.lz_clarity_pat_contacts pc.pat_id = pat.pat_id
+left join i2b2.lz_clarity_pat_contacts pc on pc.pat_id = pat.pat_id
 JOIN xdr_<<PROJECT_ID>>_coh         coh ON pat.pat_id = coh.pat_id
 join i2b2.bip_patient_link          bip on bip.patient_ide = coh.pat_id
 LEFT JOIN JSANZ.BIP_PAT_GEOCODE     geo ON pat.pat_id = geo.pat_id

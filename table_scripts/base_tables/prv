@@ -2,7 +2,7 @@
 DROP TABLE xdr_<<PROJECT_ID>>_prv PURGE;
 CREATE TABLE xdr_<<PROJECT_ID>>_prv AS
 SELECT DISTINCT prv.provider_id
-    ,'IP_' || (bip.deid_prov_id + (101101101 * <<PROJECT_ID>>))    ip_provider_id
+    ,'IPPRV_' || (bip.deid_prov_id + (101101101 * <<PROJECT_ID>>))    ip_provider_id
     ,prv.provider_name
     ,prv.provider_type                                    
     ,prv.primary_specialty                          
