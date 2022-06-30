@@ -13,6 +13,7 @@
             "MARITAL_STATUS",
             "SEXUAL_ORIENTATION",
             "RELIGION",
+            "IP_Current_Pcp_Id",
             "ADI_NATRANK",
             "ADI_STATERNK",
             "EDUCATION",
@@ -53,6 +54,20 @@
             "fin_class_name",
             "payor_name",
             "filing_order"
+        ]
+    },
+    {
+        "NAME": "Elixhauser",
+        "TABLES": ["elix"],
+        "ELEMENTS": [
+            "Elixhauser (Standard Pull)"
+        ]
+    },
+    {
+        "NAME": "Charlson",
+        "TABLES": ["charl"],
+        "ELEMENTS": [
+            "Charlson (Standard Pull)"
         ]
     },
     {

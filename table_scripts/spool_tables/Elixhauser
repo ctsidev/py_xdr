@@ -1,0 +1,6 @@
+-- Elixhauser.csv
+select distinct *
+from xdr_<<PROJECT_ID>>_elix
+order by ip_patient_id
+;
+

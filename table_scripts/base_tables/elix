@@ -1,0 +1,10 @@
+-- ELIX
+DROP TABLE xdr_<<PROJECT_ID>>_elix PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_elix AS
+select pat.ip_patient_id
+    ,elix.*
+from xdr_<<PROJECT_ID>>_pat pat
+join i2b2.lz_clarity_elixhauser_score elix on pat.pat_id = elix.pat_id
+;
+
+alter table xdr_<<PROJECT_ID>>_elix drop column pat_id;

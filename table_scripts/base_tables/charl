@@ -1,0 +1,10 @@
+-- CHARL
+DROP TABLE xdr_<<PROJECT_ID>>_charl PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_charl AS
+select pat.ip_patient_id
+    ,charl.*
+from xdr_<<PROJECT_ID>>_pat pat
+join i2b2.lz_clarity_charlson_score charl on pat.pat_id = charl.pat_id
+;
+
+alter table xdr_<<PROJECT_ID>>_charl drop column pat_id;

@@ -1,0 +1,6 @@
+-- Charlson.csv
+select distinct *
+from xdr_<<PROJECT_ID>>_charl
+order by ip_patient_id
+;
+
