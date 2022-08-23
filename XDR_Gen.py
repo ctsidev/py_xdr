@@ -51,9 +51,9 @@ class XDR_Gen:
         for sql_table in sql_tables:
             f = open(os.path.join('table_scripts', 'base_tables', sql_table), 'r').read()
             f = f.replace('<<PROJECT_ID>>', self.project_id)
-            f = f.replace('<<DATE_FROM>>', self.date_from)
-            f = f.replace('<<DATE_TO>>', self.date_to)
-            f = f.replace('<<DATE_RANGE>>', f"between to_date({self.date_from},'mm/dd/yyyy') and to_date({self.date_to},'mm/dd/yyyy')")
+            f = f.replace('<<DATE_FROM>>', f"'{self.date_from}'")
+            f = f.replace('<<DATE_TO>>', f"'{self.date_to}'")
+            f = f.replace('<<DATE_RANGE>>', f"between to_date('{self.date_from}','mm/dd/yyyy') and to_date('{self.date_to}','mm/dd/yyyy')")
             if self.basis == 'Patient_Based':
                 f = f.replace('<<LINK_TBL>>', 'pat')
                 f = f.replace('<<LINK_COL>>', 'pat_id')
@@ -95,6 +95,6 @@ order by p2.pat_name
 """
 
         return { 
-            f"xdr_{self.project_id}.sql": base_script + ipenc_lookup + date_range,
+            f"xdr_{self.project_id}.sql": base_script + ipenc_lookup,
             f"xdr_{self.project_id}_SPOOL.sql": spool_script + hipaa
         }
