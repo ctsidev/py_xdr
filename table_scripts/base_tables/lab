@@ -19,6 +19,7 @@ SELECT DISTINCT t.pat_id
     ,COALESCE(epic_loinc, bip_loinc_mapping)    LOINC
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>> t
 <<LAB_LINK_STR>>
+where lab.order_time <<DATE_RANGE>>
 ;
 
 drop table xdr_<<PROJECT_ID>>_lab_ipid purge;

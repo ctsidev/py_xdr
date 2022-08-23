@@ -22,7 +22,7 @@ SELECT DISTINCT t.pat_id
     ,meas.meas_value measure_value
 FROM xdr_<<PROJECT_ID>>_flow_pre1           t   
 JOIN ip_flwsht_meas                         meas ON t.fsd_id = meas.fsd_id
-WHERE meas.recorded_time IS NOT NULL 
+WHERE meas.recorded_time <<DATE_RANGE>>
 AND meas.meas_value IS NOT NULL
 AND meas.flo_meas_id IN (
     '11'         --Height

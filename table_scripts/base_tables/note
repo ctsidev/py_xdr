@@ -34,6 +34,7 @@ FROM (
         LEFT JOIN zc_note_type                      xnt         ON info.note_type_noadd_c = xnt.note_type_c
         LEFT JOIN zc_note_type_ip                   xnti        ON info.ip_note_type_c = xnti.type_ip_c
         WHERE trim(text.note_text) IS NOT NULL
+        and info.create_instant_dttm <<DATE_RANGE>>
         AND (info.note_type_noadd_c NOT IN ('38'         --Bookmark
                 ,'46'                                    --Address Verification Message
                 ,'97'                                    --Reg History Event

@@ -13,7 +13,7 @@ def home():
 @app.route('/api/generate', methods=['POST'])
 def generate():
     request_data = request.get_json()
-    xdr = XDR_Gen(request_data['PROJECT_ID'], request_data['BASIS'])
+    xdr = XDR_Gen(request_data['PROJECT_ID'], request_data['BASIS'], request_data['DATEFROM'], request_data['DATETO'])
     scripts = xdr.generate(request_data['TABLES'])
     return jsonify(scripts)
 

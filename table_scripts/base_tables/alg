@@ -22,4 +22,5 @@ LEFT JOIN zc_alrgy_status     xst ON alg.alrgy_status_c = xst.alrgy_status_c
 LEFT JOIN zc_alrgy_dlet_rsn   xdr ON alg.alrgy_dlet_rsn_c = xdr.alrgy_dlet_rsn_c
 WHERE
     xst.name = 'Active'
+    and alg.date_noted <<DATE_RANGE>>
 ;

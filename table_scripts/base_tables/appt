@@ -38,4 +38,5 @@ SELECT DISTINCT coh.pat_id
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>    coh
 JOIN v_sched_appt                       vsa ON coh.<<LINK_COL>> = vsa.<<LINK_COL>>
 LEFT JOIN clarity_prc                   clprc ON vsa.prc_id = clprc.prc_id
+where appt_dttm <<DATE_RANGE>>
 ;

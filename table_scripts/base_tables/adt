@@ -19,4 +19,5 @@ SELECT DISTINCT t.pat_id
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>    t
 JOIN i2b2.lz_clarity_adt                adt ON t.<<LINK_COL>> = adt.<<LINK_COL>>
 left join i2b2.lz_clarity_dept          dep on dep.department_id = adt.department_id
+where adt.time_in <<DATE_RANGE>>
 ;

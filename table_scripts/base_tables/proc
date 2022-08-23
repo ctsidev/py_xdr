@@ -12,6 +12,7 @@ SELECT DISTINCT t.pat_id
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
 JOIN i2b2.int_cpt                           cpt ON t.<<LINK_COL>> = cpt.<<LINK_COL>>
 LEFT JOIN clarity_eap                       eap ON cpt.cpt_code = eap.proc_code
+where cpt.contact_date <<DATE_RANGE>>
 UNION
 SELECT DISTINCT t.pat_id
     ,t.pat_mrn_id
@@ -24,6 +25,7 @@ SELECT DISTINCT t.pat_id
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
 JOIN i2b2.lz_clarity_cpt_code               cpt ON t.<<LINK_COL>> = cpt.<<LINK_COL>>
 LEFT JOIN clarity_eap                       eap ON cpt.cpt_code = eap.proc_code
+where cpt.contact_date <<DATE_RANGE>>
 UNION
 SELECT DISTINCT t.pat_id
     ,t.pat_mrn_id
@@ -38,6 +40,7 @@ JOIN i2b2.int_proc                          px ON t.<<LINK_COL>> = px.<<LINK_COL
 LEFT JOIN i2b2.lz_dx_px_lookup              icd ON px.icd9_code = icd.code
     AND icd.code_type = 'PX' 
     AND icd.icd_type = 9
+where px.effective_date <<DATE_RANGE>>
 UNION
 SELECT DISTINCT t.pat_id
     ,t.pat_mrn_id
@@ -54,4 +57,5 @@ SELECT DISTINCT t.pat_id
     ,px.procedure_name                  proc_name
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
 JOIN i2b2.lz_clarity_procedures             px ON t.<<LINK_COL>> = px.<<LINK_COL>>
+where px.proc_date <<DATE_RANGE>>
 ;

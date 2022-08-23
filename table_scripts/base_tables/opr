@@ -50,6 +50,7 @@ WHERE opr.order_status_c = 5
             or opr.order_type_c = 3         --Microbiology
             or opr.order_type_c = 59        --Pathology
     )
+    and opr.order_time <<DATE_RANGE>>
 ;
 
 drop table xdr_<<PROJECT_ID>>_opr_ipid purge;

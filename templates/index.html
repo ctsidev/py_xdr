@@ -24,6 +24,14 @@
                       </select>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-3">
+                    <input type="text" class="form-control" id="dateFrom" placeholder="Date From (mm/dd/yyyy))" required>
+                </div>
+                <div class="col-3">
+                    <input type="text" class="form-control" id="dateTo" placeholder="Date To (mm/dd/yyyy))" required>
+                </div>
+            </div>
             <br />
             <div class="accordion" id="tables"></div>
             <br />
@@ -92,6 +100,8 @@
             let ckBoxes = document.getElementsByClassName('form-check-input')
             let projectId = document.getElementById('projectId').value
             let basis = document.getElementById('basis').value
+            let dateFrom = document.getElementById('dateFrom').value
+            let dateTo = document.getElementById('dateTo').value
             let tableJson = {}
             let table
             let element
@@ -111,6 +121,8 @@
             let json = {
                 PROJECT_ID: projectId,
                 BASIS: basis,
+                DATEFROM: dateFrom,
+                DATETO: dateTo,
                 TABLES: tableJson
             }
 

@@ -40,6 +40,7 @@ WHERE ((med.ordering_mode = 'Inpatient'
         OR med.ordering_mode != 'Inpatient'
     )
 AND med.used_med_id IS NOT NULL
+and med.ordering_date <<DATE_RANGE>>
 ;
 
 drop table xdr_<<PROJECT_ID>>_med_ipid purge;

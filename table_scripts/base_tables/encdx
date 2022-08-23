@@ -19,7 +19,7 @@ JOIN i2b2.int_dx                            dx ON t.<<LINK_COL>> = dx.<<LINK_COL
 LEFT JOIN i2b2.lz_dx_px_lookup              icd ON dx.icd9_code = icd.code
     AND icd.code_type = 'DX' 
     AND icd.icd_type = 9
-WHERE trunc(dx.effective_date) <= to_date('09/30/2015','mm/dd/yyyy')
+WHERE trunc(dx.effective_date) between to_date(<<DATE_FROM>>,'mm/dd/yyyy') and to_date('09/30/2015','mm/dd/yyyy')
 UNION
 SELECT DISTINCT t.pat_id
     ,t.pat_mrn_id          
@@ -40,6 +40,6 @@ join i2b2.lz_clarity_diagnosis_new          dx ON t.<<LINK_COL>> = dx.<<LINK_COL
 LEFT JOIN i2b2.lz_dx_px_lookup              icd ON dx.icd_code = icd.code
     AND dx.icd_type = icd.icd_type
     AND icd.code_type = 'DX' 
-WHERE ( trunc(dx.contact_date) <= to_date('09/30/2015','mm/dd/yyyy') AND dx.icd_type = 9 )
-    OR ( trunc(dx.contact_date) > to_date('09/30/2015','mm/dd/yyyy') AND dx.icd_type = 10 )
+WHERE ( trunc(dx.contact_date) between to_date(<<DATE_FROM>>,'mm/dd/yyyy') and to_date('09/30/2015','mm/dd/yyyy') AND dx.icd_type = 9 )
+    OR ( trunc(dx.contact_date) between to_date('10/01/2015','mm/dd/yyyy') and to_date(<<DATE_TO>>,'mm/dd/yyyy') AND dx.icd_type = 10 )
 ;

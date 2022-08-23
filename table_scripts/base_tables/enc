@@ -38,4 +38,5 @@ JOIN i2b2.lz_clarity_enc                        enc ON pat.pat_id = enc.pat_id
 LEFT JOIN i2b2.lz_clarity_enc_inpatient         eip ON enc.pat_enc_csn_id = eip.pat_enc_csn_id
 LEFT JOIN i2b2.lz_enc_visit_types               evt ON enc.pat_enc_csn_id = evt.pat_enc_csn_id
 LEFT JOIN i2b2.lz_clarity_dept                  dep ON enc.department_id = dep.department_id
+where effective_date_dt <<DATE_RANGE>>
 ;
