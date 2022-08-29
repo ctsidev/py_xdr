@@ -19,7 +19,6 @@ SELECT DISTINCT pat.pat_id
     ,case when death.vital_status = 'Known Deceased' and death.death_date is null then null 
         else floor(months_between(COALESCE(death.death_date, current_date), death.dob) / 12)
         end age
-    ,dob
     ,geo.ADI_NATRANK
     ,geo.ADI_STATERNK
     ,geo.education_cd                                               EDUCATION
