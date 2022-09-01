@@ -23,4 +23,4 @@ def tables():
     return jsonify(tables)
 
 if __name__ == "__main__":
-    app.run(port=5001)
+    app.run(debug=False, port=5001)

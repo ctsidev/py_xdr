@@ -4,6 +4,7 @@ select distinct ip_patient_id
 <<COLS>>
 from xdr_<<PROJECT_ID>>_enc      enc
 join xdr_<<PROJECT_ID>>_ipenc    ipenc   on enc.pat_enc_csn_id = ipenc.pat_enc_csn_id
+left join xdr_<<PROJECT_ID>>_prv prv on enc.visit_prov_id = prv.provider_id
 order by ip_patient_id
     ,ip_enc_id
 ;

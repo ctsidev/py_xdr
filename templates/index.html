@@ -67,6 +67,12 @@
             document.body.removeChild(element);
         }
 
+        function selectAll(className) {
+            for (const chk of document.querySelectorAll('.' + className)) {
+                chk.checked = true
+            }
+        }
+
         // MAIN
 
         fetch(`http://localhost:${api_port}/api/tables`).then(res => res.json()).then(tables => {
@@ -81,12 +87,13 @@
                 html += '</h2>'
                 html += `<div id="collapse${table.NAME}" class="accordion-collapse collapse ${(show) ? 'show' : ''}" aria-labelledby="heading${table.NAME}" data-bs-parent="#accordionExample">`
                 html += '<div class="accordion-body">'
+                html += `<button type="button" class="btn btn-outline-secondary" onclick="selectAll('${table.NAME}');"><em>Select All</em></button><hr />`
 
                 table.ELEMENTS.forEach(element => {
                     html += `<div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="${table.NAME};${element}">
+                    <input class="form-check-input ${table.NAME}" type="checkbox" value="${table.NAME};${element}">
                     <label class="form-check-label">
-                    ${element}
+                    ${element.toUpperCase()}
                     </label>
                     </div>`
                 })

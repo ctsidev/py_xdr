@@ -1,7 +1,8 @@
 -- Patient_Demographics.csv
 select distinct ip_patient_id
 <<COLS>>
-from xdr_<<PROJECT_ID>>_pat
+from xdr_<<PROJECT_ID>>_pat pat
+left join xdr_<<PROJECT_ID>>_prv prv on pat.cur_pcp_prov_id = prv.provider_id
 order by ip_patient_id
 ;
 
