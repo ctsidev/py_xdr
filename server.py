@@ -2,6 +2,9 @@ from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from XDR_Gen import XDR_Gen
 import json
+import os
+
+os.system('cls')
 
 app = Flask(__name__)
 CORS(app)
