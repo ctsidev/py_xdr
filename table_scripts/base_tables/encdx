@@ -2,6 +2,28 @@
 DROP TABLE xdr_<<PROJECT_ID>>_encdx PURGE;
 CREATE TABLE xdr_<<PROJECT_ID>>_encdx AS
 SELECT DISTINCT t.pat_id
+    ,t.pat_mrn_id          
+    ,t.ip_patient_id		 
+    ,dx.pat_enc_csn_id
+    ,dx.contact_date        DIAGNOSIS_DATE
+    ,CASE WHEN trunc(dx.contact_date) <= to_date('09/30/2015','mm/dd/yyyy') THEN 9
+        ELSE 10 END         icd_type
+    ,dx.icd_code             
+    ,'CLARITY'              source        
+    ,icd.icd_desc           ICD_DESCRIPTION
+    ,dx.PRIMARY_SEC_FLAG	PRIMARY_DIAGNOSIS_FLAG
+    ,dx.ADMIT_DX_FLAG       ADMISSION_DIAGNOSIS_FLAG
+    ,dx.POA_FLAG		    PRESENT_ON_ADMISSION
+    ,dx.HSP_FINAL_DX_FLAG   HOSPITAL_FINAL_DIAGNOSIS
+FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
+join i2b2.lz_clarity_diagnosis_new          dx ON t.<<LINK_COL>> = dx.<<LINK_COL>>
+LEFT JOIN i2b2.lz_dx_px_lookup              icd ON dx.icd_code = icd.code
+    AND dx.icd_type = icd.icd_type
+    AND icd.code_type = 'DX' 
+WHERE ( trunc(dx.contact_date) between to_date(<<DATE_FROM>>,'mm/dd/yyyy') and to_date('09/30/2015','mm/dd/yyyy') AND dx.icd_type = 9 )
+    OR ( trunc(dx.contact_date) between to_date('10/01/2015','mm/dd/yyyy') and to_date(<<DATE_TO>>,'mm/dd/yyyy') AND dx.icd_type = 10 )
+UNION
+SELECT DISTINCT t.pat_id
     ,t.pat_mrn_id
     ,t.ip_patient_id
     ,dx.pat_enc_csn_id
@@ -20,26 +42,4 @@ LEFT JOIN i2b2.lz_dx_px_lookup              icd ON dx.icd9_code = icd.code
     AND icd.code_type = 'DX' 
     AND icd.icd_type = 9
 WHERE trunc(dx.effective_date) between to_date(<<DATE_FROM>>,'mm/dd/yyyy') and to_date('09/30/2015','mm/dd/yyyy')
-UNION
-SELECT DISTINCT t.pat_id
-    ,t.pat_mrn_id          
-    ,t.ip_patient_id		 
-    ,dx.pat_enc_csn_id
-    ,dx.contact_date         
-    ,CASE WHEN trunc(dx.contact_date) <= to_date('09/30/2015','mm/dd/yyyy') THEN 9
-        ELSE 10 END          icd_type
-    ,dx.icd_code             
-    ,'CLARITY'               source        
-    ,icd.icd_desc            
-    ,dx.PRIMARY_SEC_FLAG	 
-    ,dx.ADMIT_DX_FLAG	 
-    ,dx.POA_FLAG		 
-    ,dx.HSP_FINAL_DX_FLAG
-FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
-join i2b2.lz_clarity_diagnosis_new          dx ON t.<<LINK_COL>> = dx.<<LINK_COL>>
-LEFT JOIN i2b2.lz_dx_px_lookup              icd ON dx.icd_code = icd.code
-    AND dx.icd_type = icd.icd_type
-    AND icd.code_type = 'DX' 
-WHERE ( trunc(dx.contact_date) between to_date(<<DATE_FROM>>,'mm/dd/yyyy') and to_date('09/30/2015','mm/dd/yyyy') AND dx.icd_type = 9 )
-    OR ( trunc(dx.contact_date) between to_date('10/01/2015','mm/dd/yyyy') and to_date(<<DATE_TO>>,'mm/dd/yyyy') AND dx.icd_type = 10 )
 ;
