@@ -42,7 +42,7 @@ class XDR_Gen:
                     if 'date' in element.lower() or 'time' in element.lower() or element.lower() == 'dob':
                         element = f"to_char({element}, 'mm/dd/yyyy hh24:mi') {element}"
                     elif element.lower() == 'ip_current_pcp_id' or element.lower() == 'ip_encounter_prov_id':
-                        element = f"prv.ip_provider_id {element}"
+                        element = f"-- prv.ip_provider_id {element}"
 
                     cols += f'\t,{element}\n'
 
