@@ -16,9 +16,7 @@ SELECT DISTINCT pat.pat_id
     ,pat.cur_pcp_prov_id
     ,death.vital_status
     ,death.death_date
-    ,case when death.vital_status = 'Known Deceased' and death.death_date is null then null 
-        else floor(months_between(COALESCE(death.death_date, current_date), death.dob) / 12)
-        end age
+    ,death.age
     ,geo.ADI_NATRANK
     ,geo.ADI_STATERNK
     ,geo.education_cd                                               EDUCATION
@@ -44,14 +42,5 @@ left join i2b2.lz_clarity_pat_contacts pc on pc.pat_id = pat.pat_id
 JOIN xdr_<<PROJECT_ID>>_coh         coh ON pat.pat_id = coh.pat_id
 join i2b2.bip_patient_link          bip on bip.patient_ide = coh.pat_id
 LEFT JOIN JSANZ.BIP_PAT_GEOCODE     geo ON pat.pat_id = geo.pat_id
-join (
-    select pat.pat_id
-        ,case when pat.pat_status_c = 2 or enc.pat_id is not null or death.pat_id is not null then 'Known Deceased' else 'Not Known Deceased' end vital_status
-        ,COALESCE(pat.death_date, max(enc.hosp_disch_time) over (partition by enc.pat_id), death.death_date) death_date
-        ,pat.birth_date dob
-    from xdr_<<PROJECT_ID>>_coh coh 
-    join patient pat on coh.pat_id = pat.pat_id
-    left join pat_enc_hsp enc on pat.pat_id = enc.pat_id and (enc.disch_disp_c in ('20', '40', '41', '42', '71') or enc.ed_disposition_c = '8')
-    left join i2b2.lz_death death on pat.pat_id = death.pat_id
-) death on coh.pat_id = death.pat_id
+join f_death(xdr_<<PROJECT_ID>>_coh) death on coh.pat_id = death.pat_id
 ;
