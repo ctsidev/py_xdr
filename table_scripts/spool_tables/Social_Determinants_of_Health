@@ -4,3 +4,4 @@ select distinct ip_patient_id
 from xdr_<<PROJECT_ID>>_socdet
 order by ip_patient_id
 ;
+
