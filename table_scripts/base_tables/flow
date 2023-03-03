@@ -1,6 +1,6 @@
--- FLOW
-DROP TABLE xdr_<<PROJECT_ID>>_flow_pre1 PURGE;
-CREATE TABLE xdr_<<PROJECT_ID>>_flow_pre1 AS
+-- FLOW_VIT
+DROP TABLE xdr_<<PROJECT_ID>>_flovit_1 PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_flovit_1 AS
 SELECT DISTINCT t.pat_id
     ,t.ip_patient_id
     ,enc.pat_enc_csn_id
@@ -11,8 +11,8 @@ join i2b2.lz_clarity_enc                    enc ON t.<<LINK_COL>> = enc.<<LINK_C
 JOIN ip_flwsht_rec                          rec ON enc.inpatient_data_id = rec.inpatient_data_id
 ;
 
-DROP TABLE xdr_<<PROJECT_ID>>_flow_pre2 PURGE;
-CREATE TABLE xdr_<<PROJECT_ID>>_flow_pre2 AS
+DROP TABLE xdr_<<PROJECT_ID>>_flovit_2 PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_flovit_2 AS
 SELECT DISTINCT t.pat_id
     ,t.ip_patient_id
     ,t.pat_enc_csn_id
@@ -20,24 +20,14 @@ SELECT DISTINCT t.pat_id
     ,meas.flo_meas_id
     ,meas.recorded_time
     ,meas.meas_value measure_value
-FROM xdr_<<PROJECT_ID>>_flow_pre1           t   
+FROM xdr_<<PROJECT_ID>>_flovit_1           t   
 JOIN ip_flwsht_meas                         meas ON t.fsd_id = meas.fsd_id
 WHERE meas.recorded_time <<DATE_RANGE>>
 AND meas.meas_value IS NOT NULL
-AND meas.flo_meas_id IN (
-    '11'         --Height
-    ,'14'         --Weight
-    ,'5'          --Blood Pressure  
-    ,'8'          --Pulse
-    ,'6'          --Temperature
-    ,'9'          --Respiratory Rate 
-    ,'10'         --Pulse Oximetry (SpO2)
-    ,'301070'     --BMI
-)
 ;
 
-DROP TABLE xdr_<<PROJECT_ID>>_flow PURGE;
-CREATE TABLE xdr_<<PROJECT_ID>>_flow AS
+DROP TABLE xdr_<<PROJECT_ID>>_vit PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_vit AS
 SELECT DISTINCT t.pat_id
     ,t.ip_patient_id
     ,t.pat_enc_csn_id
@@ -49,7 +39,45 @@ SELECT DISTINCT t.pat_id
     ,dta.display_name           
     ,gpd.disp_name              
     ,gpd.flo_meas_name          vital_sign_type
-FROM xdr_<<PROJECT_ID>>_flow_pre2       t   
+FROM xdr_<<PROJECT_ID>>_flovit_2       t   
 JOIN ip_flo_gp_data                     gpd ON t.flo_meas_id = gpd.flo_meas_id
 JOIN ip_flt_data                        dta ON t.flt_id = dta.template_id
+where meas.flo_meas_id IN (
+    '11'         --Height
+    ,'14'         --Weight
+    ,'5'          --Blood Pressure  
+    ,'8'          --Pulse
+    ,'6'          --Temperature
+    ,'9'          --Respiratory Rate 
+    ,'10'         --Pulse Oximetry (SpO2)
+    ,'301070'     --BMI
+)
 ; 
+
+DROP TABLE xdr_<<PROJECT_ID>>_flow PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_flow AS
+SELECT DISTINCT t.pat_id
+    ,t.ip_patient_id
+    ,t.pat_enc_csn_id
+    ,t.flt_id
+    ,t.flo_meas_id
+    ,t.recorded_time            
+    ,t.measure_value            flowsheet_measure_value
+    ,dta.template_name
+    ,dta.display_name           
+    ,gpd.disp_name              
+    ,gpd.flo_meas_name          flowsheet_measure_type
+FROM xdr_<<PROJECT_ID>>_flovit_2       t   
+JOIN ip_flo_gp_data                     gpd ON t.flo_meas_id = gpd.flo_meas_id
+JOIN ip_flt_data                        dta ON t.flt_id = dta.template_id
+where meas.flo_meas_id NOT IN (
+    '11'         --Height
+    ,'14'         --Weight
+    ,'5'          --Blood Pressure  
+    ,'8'          --Pulse
+    ,'6'          --Temperature
+    ,'9'          --Respiratory Rate 
+    ,'10'         --Pulse Oximetry (SpO2)
+    ,'301070'     --BMI
+)
+;

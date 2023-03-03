@@ -15,7 +15,12 @@ SELECT DISTINCT t.pat_id
     ,lab.component_id                           COMPONENT_ID
     ,lab.component_name                         COMPONENT_NAME
     ,lab.ord_value                              RESULT
+    ,lab.harm_text_val
+    ,lab.harm_sign
+    ,lab.harm_num_val
     ,lab.reference_unit                         REFERENCE_UNIT
+    ,lab.reference_low
+    ,lab.reference_high
     ,COALESCE(epic_loinc, bip_loinc_mapping)    LOINC
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>> t
 <<LAB_LINK_STR>>

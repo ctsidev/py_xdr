@@ -72,6 +72,8 @@ class XDR_Gen:
         
         ipenc_lookup = ''
         for key in enc_tables:
+            if key == 'flow':
+                key = 'flovit_2'
             ipenc_lookup += f"select distinct pat_enc_csn_id from xdr_{self.project_id}_{key}\nunion\n"
 
         ipenc_lookup = f"""
