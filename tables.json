@@ -51,8 +51,7 @@
         "ELEMENTS": [
             "mem_eff_from_date",
             "mem_eff_to_date",
-            "fin_class_name",
-            "payor_name",
+            "coverage_group",
             "filing_order"
         ]
     },
