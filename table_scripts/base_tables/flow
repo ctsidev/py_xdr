@@ -42,7 +42,7 @@ SELECT DISTINCT t.pat_id
 FROM xdr_<<PROJECT_ID>>_flovit_2       t   
 JOIN ip_flo_gp_data                     gpd ON t.flo_meas_id = gpd.flo_meas_id
 JOIN ip_flt_data                        dta ON t.flt_id = dta.template_id
-where meas.flo_meas_id IN (
+where t.flo_meas_id IN (
     '11'         --Height
     ,'14'         --Weight
     ,'5'          --Blood Pressure  
@@ -70,7 +70,7 @@ SELECT DISTINCT t.pat_id
 FROM xdr_<<PROJECT_ID>>_flovit_2       t   
 JOIN ip_flo_gp_data                     gpd ON t.flo_meas_id = gpd.flo_meas_id
 JOIN ip_flt_data                        dta ON t.flt_id = dta.template_id
-where meas.flo_meas_id NOT IN (
+where t.flo_meas_id NOT IN (
     '11'         --Height
     ,'14'         --Weight
     ,'5'          --Blood Pressure  
