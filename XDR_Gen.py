@@ -56,7 +56,13 @@ class XDR_Gen:
             f = f.replace('<<PROJECT_ID>>', self.project_id)
             f = f.replace('<<DATE_FROM>>', f"'{self.date_from}'")
             f = f.replace('<<DATE_TO>>', f"'{self.date_to}'")
-            f = f.replace('<<DATE_RANGE>>', f"between to_date('{self.date_from}','mm/dd/yyyy') and to_date('{self.date_to}','mm/dd/yyyy')")
+            to_date_str = ''
+            if self.date_to == 'current_date':
+                to_date_str = 'current_date'
+            else:
+                to_date_str = f"to_date('{self.date_to}','mm/dd/yyyy')"
+
+            f = f.replace('<<DATE_RANGE>>', f"between to_date('{self.date_from}','mm/dd/yyyy') and {to_date_str}")
             if self.basis == 'Patient_Based':
                 f = f.replace('<<LINK_TBL>>', 'pat')
                 f = f.replace('<<LINK_COL>>', 'pat_id')

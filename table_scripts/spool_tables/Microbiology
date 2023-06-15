@@ -14,7 +14,7 @@ select distinct prc.ip_patient_id
                 ,org.name                    AS organism_name
                 ,mic.micro_results_cmt       AS results_cmt
 FROM xdr_<<PROJECT_ID>>_opr			prc
-LEFT JOIN xdr_<<PROJECT_ID>>_mic    		mic ON prc.order_proc_id = mic.micro_order_id and prc.line = mic.micro_line   
+JOIN xdr_<<PROJECT_ID>>_mic    		mic ON prc.order_proc_id = mic.micro_order_id and prc.line = mic.micro_line   
 LEFT JOIN clarity.zc_specimen_source  xps ON prc.specimen_source_c = xps.specimen_source_c
 LEFT JOIN clarity.clarity_organism	org ON prc.lrr_based_organ_id = org.organism_id
 ORDER BY ip_patient_id, ip_order_proc_id
