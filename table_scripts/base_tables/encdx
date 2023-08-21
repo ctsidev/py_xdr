@@ -15,6 +15,7 @@ SELECT DISTINCT t.pat_id
     ,dx.ADMIT_DX_FLAG       ADMISSION_DIAGNOSIS_FLAG
     ,dx.POA_FLAG		    PRESENT_ON_ADMISSION
     ,dx.HSP_FINAL_DX_FLAG   HOSPITAL_FINAL_DIAGNOSIS
+    ,floor(months_between(contact_date, dob)/12) diagnosis_age
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
 join i2b2.lz_clarity_diagnosis_new          dx ON t.<<LINK_COL>> = dx.<<LINK_COL>>
 LEFT JOIN i2b2.lz_dx_px_lookup              icd ON dx.icd_code = icd.code
@@ -36,6 +37,7 @@ SELECT DISTINCT t.pat_id
     ,NULL                   ADMISSION_DIAGNOSIS_FLAG
     ,NULL                   PRESENT_ON_ADMISSION
     ,NULL                   HOSPITAL_FINAL_DIAGNOSIS
+    ,floor(months_between(effective_date, dob)/12) diagnosis_age
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
 JOIN i2b2.int_dx                            dx ON t.<<LINK_COL>> = dx.<<LINK_COL>>
 LEFT JOIN i2b2.lz_dx_px_lookup              icd ON dx.icd9_code = icd.code

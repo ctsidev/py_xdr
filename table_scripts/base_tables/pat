@@ -33,11 +33,13 @@ SELECT DISTINCT pat.pat_id
     ,p2.city
     ,pat.state
     ,pat.zip zip_code
-    ,pc.home_phone
-    ,pc.cell_phone
+    ,case when pc.home_phone like '000%' then null else pc.home_phone end home_phone
+    ,case when pc.cell_phone like '000%' then null else pc.cell_phone end cell_phone
     ,pc.email_address email
+    ,occupation
 FROM i2b2.lz_clarity_patient        pat
 join patient p2 on pat.pat_id = p2.pat_id
+join patient_3 p3 on pat.pat_id = p3.pat_id
 left join i2b2.lz_clarity_pat_contacts pc on pc.pat_id = pat.pat_id
 JOIN xdr_<<PROJECT_ID>>_coh         coh ON pat.pat_id = coh.pat_id
 join i2b2.bip_patient_link          bip on bip.patient_ide = coh.pat_id

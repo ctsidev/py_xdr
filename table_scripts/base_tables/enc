@@ -19,6 +19,7 @@ SELECT DISTINCT pat.pat_id
     ,dep.specialty                                          DEPARTMENT_SPECIALTY
     ,dep.loc_name                                           LOCATION
     ,enc.visit_prov_id
+    ,chief_complaint_list
     ,CASE evt.visit_type
         WHEN 'ED' THEN 'Emergency Department only'
         WHEN 'EI' THEN 'Emergency to Inpatient'
@@ -38,5 +39,12 @@ JOIN i2b2.lz_clarity_enc                        enc ON pat.pat_id = enc.pat_id
 LEFT JOIN i2b2.lz_clarity_enc_inpatient         eip ON enc.pat_enc_csn_id = eip.pat_enc_csn_id
 LEFT JOIN i2b2.lz_enc_visit_types               evt ON enc.pat_enc_csn_id = evt.pat_enc_csn_id
 LEFT JOIN i2b2.lz_clarity_dept                  dep ON enc.department_id = dep.department_id
+left join (select distinct vs.pat_enc_csn_id
+                          ,listagg(rfv.display_text, ' | ') within group (order by vs.line) as chief_complaint_list     
+             from xdr_<<PROJECT_ID>>_pat           lk 
+             join clarity.pat_enc_rsn_visit  vs  on  lk.pat_id = vs.pat_id
+             join CL_RSN_FOR_VISIT rfv on vs.enc_reason_id = rfv.reason_visit_id
+             group by lk.pat_mrn_id,vs.pat_enc_csn_id
+          ) chief on enc.pat_enc_csn_id = chief.pat_enc_csn_id
 where effective_date_dt <<DATE_RANGE>>
 ;

@@ -11,5 +11,5 @@ select distinct pat.pat_id
     ,bcr.coverage_group
 from i2b2.lz_clarity_coverage_pat cov
 join xdr_<<PROJECT_ID>>_pat pat on cov.pat_id = pat.pat_id
-left join i2b2.bip_coverage_rollup bcr on ins.payor_name = bcr.payor and ins.fin_class_name = bcr.financial_class
+left join i2b2.bip_coverage_rollup bcr on cov.payor_name = bcr.payor and cov.fin_class_name = bcr.financial_class
 ;

@@ -85,7 +85,8 @@
             "EPIC_DEPARTMENT_ID",
             "EPIC_DEPARTMENT_NAME",
             "DEPARTMENT_SPECIALTY",
-            "LOCATION"
+            "LOCATION",
+            "CHIEF_COMPLAINT_LIST"
         ]
     },
     {
@@ -117,6 +118,7 @@
         "TABLES": ["encdx"],
         "ELEMENTS": [
             "DIAGNOSIS_DATE",
+            "DIAGNOSIS_AGE",
             "ICD_TYPE",
             "ICD_CODE",
             "ICD_DESCRIPTION",
