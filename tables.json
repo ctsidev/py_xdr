@@ -22,7 +22,12 @@
             "SVI_HCOMP",
             "SVI_MINO_LANG",
             "SVI_HTYPE_TRANS",
-            "SVI_TOTAL"
+            "SVI_TOTAL",
+            "HPI_PCTILE",
+            "RUCA_PRIMARY_SCORE",
+            "RUCA_PRIMARY_DESCRIPTION",
+            "RUCA_SECONDARY_SCORE",
+            "RUCA_SECONDARY_DESCRIPTION"
         ]
     },
     {

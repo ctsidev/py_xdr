@@ -1,6 +1,6 @@
 -- PROC
-DROP TABLE xdr_<<PROJECT_ID>>_proc PURGE;
-CREATE TABLE xdr_<<PROJECT_ID>>_proc AS
+DROP TABLE xdr_<<PROJECT_ID>>_proc_1 PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_proc_1 AS
 SELECT DISTINCT t.pat_id
     ,t.pat_mrn_id
     ,t.ip_patient_id
@@ -9,6 +9,7 @@ SELECT DISTINCT t.pat_id
     ,'CPT-preCC'                        PROCEDURE_TYPE
     ,cpt.cpt_code                       PROCEDURE_CODE 
     ,eap.proc_name                      PROCEDURE_DESCRIPTION
+    ,floor(months_between(contact_date, dob) / 12) procedure_age
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
 JOIN i2b2.int_cpt                           cpt ON t.<<LINK_COL>> = cpt.<<LINK_COL>>
 LEFT JOIN clarity_eap                       eap ON cpt.cpt_code = eap.proc_code
@@ -22,6 +23,7 @@ SELECT DISTINCT t.pat_id
     ,'CPT-'||cpt.source                 proc_type
     ,cpt.cpt_code                       proc_code 
     ,eap.proc_name 
+    ,floor(months_between(contact_date, dob) / 12) procedure_age
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
 JOIN i2b2.lz_clarity_cpt_code               cpt ON t.<<LINK_COL>> = cpt.<<LINK_COL>>
 LEFT JOIN clarity_eap                       eap ON cpt.cpt_code = eap.proc_code
@@ -35,6 +37,7 @@ SELECT DISTINCT t.pat_id
     ,'ICD-9' proc_type
     ,px.icd9_code                       proc_code
     ,icd.icd_desc                       proc_name
+    ,floor(months_between(effective_date, dob) / 12) procedure_age
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
 JOIN i2b2.int_proc                          px ON t.<<LINK_COL>> = px.<<LINK_COL>>
 LEFT JOIN i2b2.lz_dx_px_lookup              icd ON px.icd9_code = icd.code
@@ -55,7 +58,51 @@ SELECT DISTINCT t.pat_id
         END                             proc_type
     ,px.px_code                         proc_code
     ,px.procedure_name                  proc_name
+    ,floor(months_between(proc_date, dob) / 12) procedure_age
 FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>        t
 JOIN i2b2.lz_clarity_procedures             px ON t.<<LINK_COL>> = px.<<LINK_COL>>
 where px.proc_date <<DATE_RANGE>>
+;
+
+drop table xdr_<<PROJECT_ID>>_proc_2 purge;
+create table xdr_<<PROJECT_ID>>_proc_2 AS
+select distinct proc.pat_enc_csn_id
+    ,SUBSTR(COALESCE(hspt.hcpcs_code,hspt.cpt_code),1,5) 	AS procedure_code
+    ,hspt.PERFORMING_PROV_ID
+from xdr_<<PROJECT_ID>>_proc_1 proc
+JOIN hsp_transactions                 	hspt ON proc.pat_enc_csn_id = hspt.pat_enc_csn_id
+LEFT OUTER JOIN f_arhb_inactive_tx    	fait ON hspt.tx_id = fait.tx_id
+where hspt.tx_type_ha_c = 1  
+        AND (LENGTH(hspt.cpt_code) = 5 OR hspt.hcpcs_code IS NOT NULL)
+        AND fait.tx_id IS NULL
+union 
+select distinct proc.pat_enc_csn_id
+    ,arpb.cpt_code
+    ,arpb.SERV_PROVIDER_ID
+from xdr_<<PROJECT_ID>>_proc_1 proc
+JOIN arpb_transactions          arpb ON proc.pat_enc_csn_id = arpb.pat_enc_csn_id
+WHERE tx_type_c = 1		
+        AND void_date IS NULL
+union
+select distinct proc.pat_enc_csn_id
+    ,px_code  
+    ,px.PROC_PERF_PROV_ID
+from xdr_<<PROJECT_ID>>_proc_1 proc
+JOIN i2b2.lz_clarity_procedures     px   ON proc.pat_enc_csn_id = px.pat_enc_csn_id
+;
+
+drop table xdr_<<PROJECT_ID>>_proc purge;
+create table xdr_<<PROJECT_ID>>_proc as
+select distinct p1.pat_id
+    ,p1.pat_mrn_id
+    ,p1.ip_patient_id
+    ,p1.pat_enc_csn_id
+    ,p1.PROCEDURE_DATE
+    ,p1.PROCEDURE_TYPE
+    ,p1.PROCEDURE_CODE
+    ,p1.PROCEDURE_DESCRIPTION
+    ,p1.procedure_age
+    ,PERFORMING_PROV_ID
+from xdr_<<PROJECT_ID>>_proc_1 p1
+left join xdr_<<PROJECT_ID>>_proc_2 p2 on p1.pat_enc_csn_id = p2.pat_enc_csn_id and p1.procedure_code = p2.procedure_code
 ;

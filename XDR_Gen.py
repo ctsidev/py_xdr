@@ -17,7 +17,8 @@ class XDR_Gen:
             'med',
             'note',
             'pl',
-            'proc'
+            'proc',
+            'fam'
         ]
 
     def generate(self, sel_tables):
@@ -98,10 +99,11 @@ join i2b2.bip_encounter_link bip on e.pat_enc_csn_id = bip.encounter_ide
         hipaa = f"""
 -- HIPAA.txt
 select distinct p1.mrn
-    ,p2.pat_name
+    ,p2.pat_last_name
+    ,p2.pat_first_name
 from xdr_{self.project_id}_pat p1 
 join patient p2 on p1.pat_id = p2.pat_id
-order by p2.pat_name
+order by p2.pat_last_name
 ;
 """
 
