@@ -1,6 +1,6 @@
 -- PROC
-DROP TABLE xdr_<<PROJECT_ID>>_proc_1 PURGE;
-CREATE TABLE xdr_<<PROJECT_ID>>_proc_1 AS
+DROP TABLE xdr_<<PROJECT_ID>>_proc PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_proc AS
 SELECT DISTINCT t.pat_id
     ,t.pat_mrn_id
     ,t.ip_patient_id
@@ -64,45 +64,62 @@ JOIN i2b2.lz_clarity_procedures             px ON t.<<LINK_COL>> = px.<<LINK_COL
 where px.proc_date <<DATE_RANGE>>
 ;
 
-drop table xdr_<<PROJECT_ID>>_proc_2 purge;
-create table xdr_<<PROJECT_ID>>_proc_2 AS
-select distinct proc.pat_enc_csn_id
-    ,SUBSTR(COALESCE(hspt.hcpcs_code,hspt.cpt_code),1,5) 	AS procedure_code
-    ,hspt.PERFORMING_PROV_ID
-from xdr_<<PROJECT_ID>>_proc_1 proc
-JOIN hsp_transactions                 	hspt ON proc.pat_enc_csn_id = hspt.pat_enc_csn_id
+-- PROC W PROV
+DROP TABLE xdr_<<PROJECT_ID>>_proc PURGE;
+CREATE TABLE xdr_<<PROJECT_ID>>_proc AS
+SELECT DISTINCT enc.pat_id
+                ,t.pat_mrn_id
+                ,t.ip_patient_id
+                ,hspt.pat_enc_csn_id
+                ,hspt.service_date                  					AS procedure_date               
+                ,SUBSTR(COALESCE(hspt.hcpcs_code,hspt.cpt_code),1,5) 	AS procedure_code
+                ,'CPT-Hospital'                         				AS procedure_type       
+                ,hspt.PERFORMING_PROV_ID
+                ,hspt.BILLING_PROV_ID                                   AS BILLING_PROV_ID
+        		,EAP.PROC_NAME                                          as procedure_description
+FROM i2b2.lz_clarity_enc              	enc
+JOIN xdr_<<PROJECT_ID>>_<<LINK_TBL>>    t  ON enc.<<LINK_COL>> = t.<<LINK_COL>>
+JOIN hsp_transactions                 	hspt ON enc.pat_enc_csn_id = hspt.pat_enc_csn_id
 LEFT OUTER JOIN f_arhb_inactive_tx    	fait ON hspt.tx_id = fait.tx_id
-where hspt.tx_type_ha_c = 1  
-        AND (LENGTH(hspt.cpt_code) = 5 OR hspt.hcpcs_code IS NOT NULL)
-        AND fait.tx_id IS NULL
-union 
-select distinct proc.pat_enc_csn_id
-    ,arpb.cpt_code
-    ,arpb.SERV_PROVIDER_ID
-from xdr_<<PROJECT_ID>>_proc_1 proc
-JOIN arpb_transactions          arpb ON proc.pat_enc_csn_id = arpb.pat_enc_csn_id
-WHERE tx_type_c = 1		
-        AND void_date IS NULL
+LEFT JOIN clarity_eap                 	eap  ON SUBSTR(COALESCE(hspt.hcpcs_code,hspt.cpt_code),1,5) = eap.proc_code
+WHERE hspt.tx_type_ha_c = 1  
+          AND (LENGTH(hspt.cpt_code) = 5 OR hspt.hcpcs_code IS NOT NULL)
+          AND fait.tx_id IS NULL
+          and hspt.service_date <<DATE_RANGE>>
 union
-select distinct proc.pat_enc_csn_id
-    ,px_code  
-    ,px.PROC_PERF_PROV_ID
-from xdr_<<PROJECT_ID>>_proc_1 proc
-JOIN i2b2.lz_clarity_procedures     px   ON proc.pat_enc_csn_id = px.pat_enc_csn_id
-;
-
-drop table xdr_<<PROJECT_ID>>_proc purge;
-create table xdr_<<PROJECT_ID>>_proc as
-select distinct p1.pat_id
-    ,p1.pat_mrn_id
-    ,p1.ip_patient_id
-    ,p1.pat_enc_csn_id
-    ,p1.PROCEDURE_DATE
-    ,p1.PROCEDURE_TYPE
-    ,p1.PROCEDURE_CODE
-    ,p1.PROCEDURE_DESCRIPTION
-    ,p1.procedure_age
-    ,PERFORMING_PROV_ID
-from xdr_<<PROJECT_ID>>_proc_1 p1
-left join xdr_<<PROJECT_ID>>_proc_2 p2 on p1.pat_enc_csn_id = p2.pat_enc_csn_id and p1.procedure_code = p2.procedure_code
+SELECT distinct arpb.patient_id AS pat_id
+				,t.pat_mrn_id
+                ,t.ip_patient_id
+				,arpb.pat_enc_csn_id
+				,arpb.service_date             	AS proc_date               
+				,arpb.cpt_code					AS proc_code
+				,'CPT-Professional'            	AS proc_type    
+				,arpb.SERV_PROVIDER_ID			AS PERFORMING_PROV_ID
+				,arpb.BILLING_PROV_ID           AS BILLING_PROV_ID
+				,EAP.PROC_NAME
+FROM  i2b2.lz_clarity_enc           enc
+JOIN xdr_<<PROJECT_ID>>_<<LINK_TBL>>            t ON enc.<<LINK_COL>> = t.<<LINK_COL>>
+JOIN arpb_transactions          arpb ON enc.pat_enc_csn_id = arpb.pat_enc_csn_id
+LEFT JOIN clarity_eap eap  ON arpb.cpt_code = eap.proc_code
+WHERE tx_type_c = 1					-----  Charges only
+		AND void_date IS NULL
+        and arpb.service_date <<DATE_RANGE>>
+union
+SELECT DISTINCT t.pat_id
+               ,t.pat_mrn_id
+                ,t.ip_patient_id
+               ,px.pat_enc_csn_id
+               ,px.proc_date       
+               ,px.px_code            AS proc_code
+               ,CASE
+                  WHEN px.icd_code_set = 'ICD-9-CM Volume 3' THEN 'ICD-9'
+                  WHEN px.icd_code_set = 'ICD-10-PCS' THEN 'ICD-10'
+                END AS proc_type
+               ,px.PROC_PERF_PROV_ID
+               ,null AS BILLING_PROV_ID
+               ,px.procedure_name     AS proc_name
+  FROM xdr_<<PROJECT_ID>>_<<LINK_TBL>>                  t
+  join i2b2.lz_clarity_enc           enc on enc.<<LINK_COL>> = t.<<LINK_COL>>
+  JOIN i2b2.lz_clarity_procedures     px   ON enc.pat_enc_csn_id = px.pat_enc_csn_id
+  where px.proc_date <<DATE_RANGE>>
 ;

@@ -2,7 +2,7 @@
 DROP TABLE xdr_<<PROJECT_ID>>_prv PURGE;
 CREATE TABLE xdr_<<PROJECT_ID>>_prv AS
 SELECT DISTINCT prv.provider_id
-    ,'IPPRV_' || (bip.deid_prov_id + (101101101 * <<PROJECT_ID>>))    ip_provider_id
+    ,'IPPRV_' || (bip.deid_prov_id + (<<RAND_INT>> * <<PROJECT_ID>>))    ip_provider_id
     ,prv.provider_name
     ,prv.provider_type                                    
     ,prv.primary_specialty                          
@@ -18,8 +18,8 @@ from (
         select distinct cur_pcp_prov_id prov_id
         from xdr_<<PROJECT_ID>>_pat
      ) t
-LEFT JOIN clarity.v_cube_d_provider         prv ON t.prov_id = prv.provider_id 
-LEFT JOIN clarity.clarity_ser               ser ON t.prov_id = ser.prov_id 
-LEFT JOIN clarity.clarity_emp               emp ON ser.user_id = emp.user_id
+LEFT JOIN v_cube_d_provider         prv ON t.prov_id = prv.provider_id 
+LEFT JOIN clarity_ser               ser ON t.prov_id = ser.prov_id 
+LEFT JOIN clarity_emp               emp ON ser.user_id = emp.user_id
 join i2b2.bip_provider_link                 bip on prv.provider_id = bip.clarity_prov_id
 ;

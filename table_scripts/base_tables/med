@@ -46,7 +46,7 @@ and med.ordering_date <<DATE_RANGE>>
 drop table xdr_<<PROJECT_ID>>_med_ipid purge;
 create table xdr_<<PROJECT_ID>>_med_ipid as
 select order_med_id
-    ,'IPMED_' || (order_med_id + (101101101 * <<PROJECT_ID>>))  ip_order_med_id
+    ,'IPMED_' || (order_med_id + (<<RAND_INT>> * <<PROJECT_ID>>))  ip_order_med_id
 from (
     select distinct order_med_id 
     from xdr_<<PROJECT_ID>>_med

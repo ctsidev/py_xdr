@@ -3,6 +3,7 @@ from flask_cors import CORS
 from XDR_Gen import XDR_Gen
 import json
 import os
+import webbrowser
 
 os.system('cls')
 
@@ -27,3 +28,5 @@ def tables():
 
 if __name__ == "__main__":
     app.run(port=5001)
+    #webbrowser.get("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe %s").open("http://127.0.0.1:5001/", new=1)
+    

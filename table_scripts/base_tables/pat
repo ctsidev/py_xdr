@@ -4,7 +4,7 @@ CREATE TABLE xdr_<<PROJECT_ID>>_pat AS
 SELECT DISTINCT pat.pat_id
     ,pat.pat_mrn_id
     ,pat.pat_mrn_id                                                 MRN
-    ,'IPPAT_' || (bip.patient_num + (101101101 * <<PROJECT_ID>>))      ip_patient_id
+    ,'IPPAT_' || (bip.patient_num + (<<RAND_INT>> * <<PROJECT_ID>>))      ip_patient_id
     ,pat.birth_date                                                 DOB
     ,pat.ethnic_group                                               ETHNICITY
     ,pat.mapped_race_name                                           RACE
@@ -52,16 +52,18 @@ SELECT DISTINCT pat.pat_id
     ,case when pc.cell_phone like '000%' then null else pc.cell_phone end cell_phone
     ,pc.email_address email
     ,occupation
+    ,case when myc.pat_id is not null then 1 end mychart_active
 FROM i2b2.lz_clarity_patient        pat
 join patient p2 on pat.pat_id = p2.pat_id
 join patient_3 p3 on pat.pat_id = p3.pat_id
 left join i2b2.lz_clarity_pat_contacts pc on pc.pat_id = pat.pat_id
 JOIN xdr_<<PROJECT_ID>>_coh         coh ON pat.pat_id = coh.pat_id
 join i2b2.bip_patient_link          bip on bip.patient_ide = coh.pat_id
-LEFT JOIN JSANZ.BIP_PAT_GEOCODE     geo ON pat.pat_id = geo.pat_id
+LEFT JOIN I2B2.BIP_PAT_GEOCODE     geo ON pat.pat_id = geo.pat_id
 LEFT JOIN I2B2.LZ_GEO_health_place_index   hpi ON GEO.tract_fips = hpi.geo_id
 LEFT JOIN I2B2.LZ_GEO_USDA_ERS   RUCA ON GEO.tract_fips = RUCA.FIPS
 LEFT JOIN I2B2.LZ_GEO_USDA_ERS_PRIM_C   PRUCA ON RUCA.PRIMARY_RUCA_C = PRUCA.RUCA_C
 LEFT JOIN I2B2.LZ_GEO_USDA_ERS_SECOND_C   SRUCA ON RUCA.SECONDARY_RUCA_C = SRUCA.RUCA_C and sruca.RUCA_DESC <> 'No additional code'
-join f_death(xdr_<<PROJECT_ID>>_coh) death on coh.pat_id = death.pat_id
+join cpirani.f_death(xdr_<<PROJECT_ID>>_coh) death on coh.pat_id = death.pat_id
+left join f_pat_mychart_status_hx myc on myc.pat_id = coh.pat_id and end_dttm is null and mychart_status_c = 1
 ;

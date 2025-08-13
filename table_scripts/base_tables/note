@@ -15,6 +15,7 @@ FROM (
                 THEN info.current_author_id || ' - ' || emp.name
             ELSE NULL
             END                                 CREATE_BY
+        ,emp.prov_id author_prov_id
         ,info.lst_filed_inst_dttm
         ,info.ip_note_type_c
         ,xnti.NAME                              note_type_inpatient
@@ -63,7 +64,7 @@ WHERE x.contact_date_real = latest_note
 DROP TABLE xdr_<<PROJECT_ID>>_note_ipid PURGE;
 CREATE TABLE xdr_<<PROJECT_ID>>_note_ipid AS
 SELECT note_id
-    ,'IPNOTE_' || (note_id + (101101101 * <<PROJECT_ID>>))    ip_note_id
+    ,'IPNOTE_' || (note_id + (<<RAND_INT>> * <<PROJECT_ID>>))    ip_note_id
 FROM (
     SELECT DISTINCT note_id 
     FROM xdr_<<PROJECT_ID>>_note

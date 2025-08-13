@@ -1,8 +1,12 @@
 import json, os
+import cx_Oracle as ora
+con = ora.connect('I2B2/R2x^g5j@clarityq')
+cur = con.cursor()
 
 class XDR_Gen:
     def __init__(self, project_id, basis, date_from, date_to):
         self.project_id = project_id
+        self.encrypt_key = cur.execute(f"select distinct encrypt_key_value from bip_project where project_id={project_id}").fetchone()[0]
         self.basis = basis
         self.date_from = date_from
         self.date_to = date_to
@@ -54,6 +58,7 @@ class XDR_Gen:
 
         for sql_table in sql_tables:
             f = open(os.path.join('table_scripts', 'base_tables', sql_table), 'r').read()
+            f = f.replace('<<RAND_INT>>', self.encrypt_key)
             f = f.replace('<<PROJECT_ID>>', self.project_id)
             f = f.replace('<<DATE_FROM>>', f"'{self.date_from}'")
             f = f.replace('<<DATE_TO>>', f"'{self.date_to}'")
@@ -88,7 +93,7 @@ class XDR_Gen:
 drop table xdr_{self.project_id}_ipenc purge;
 create table xdr_{self.project_id}_ipenc as
 select pat_enc_csn_id
-    ,'IPENC_' || (bip.encounter_num + (101101101 * {self.project_id})) ip_enc_id
+    ,'IPENC_' || (bip.encounter_num + ({self.encrypt_key} * {self.project_id})) ip_enc_id
 from (
 {ipenc_lookup[:-7]}
 ) e

@@ -8,7 +8,7 @@
             "RACE",
             "ETHNICITY",
             "VITAL_STATUS",
-            "LAST_ENCOUNTER_YEAR",
+            "OCCUPATION",
             "LANGUAGE",
             "MARITAL_STATUS",
             "SEXUAL_ORIENTATION",
@@ -18,6 +18,7 @@
             "ADI_STATERNK",
             "EDUCATION",
             "INCOME",
+            "OCCUPATION",
             "SVI_SOCIO_ECON",
             "SVI_HCOMP",
             "SVI_MINO_LANG",
@@ -27,7 +28,8 @@
             "RUCA_PRIMARY_SCORE",
             "RUCA_PRIMARY_DESCRIPTION",
             "RUCA_SECONDARY_SCORE",
-            "RUCA_SECONDARY_DESCRIPTION"
+            "RUCA_SECONDARY_DESCRIPTION",
+            "MYCHART_ACTIVE"
         ]
     },
     {
@@ -84,6 +86,7 @@
             "ENCOUNTER_AGE",
             "ADMIT_DATE",
             "DISCHARGE_DATE",
+            "LOS",
             "HOSP_DISCHARGE_DISPOSITION",
             "ED_DISPOSITION",
             "IP_ENCOUNTER_PROV_ID",
