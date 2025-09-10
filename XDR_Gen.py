@@ -1,6 +1,6 @@
 import json, os
 import cx_Oracle as ora
-con = ora.connect('I2B2/R2x^g5j@clarityq')
+con = ora.connect('<connectstring>')
 cur = con.cursor()
 
 class XDR_Gen:
@@ -115,4 +115,5 @@ order by p2.pat_last_name
         return { 
             f"xdr_{self.project_id}.sql": base_script + ipenc_lookup,
             f"xdr_{self.project_id}_SPOOL.sql": spool_script + hipaa
+
         }
